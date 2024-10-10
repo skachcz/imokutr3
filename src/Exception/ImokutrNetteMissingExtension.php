@@ -1,9 +1,9 @@
 <?php
 
-namespace SkachCz\Imokutr\Exception;
+namespace SkachCz\Imokutr3\Exception;
 
 /**
- * @package SkachCz\Imokutr\Exception
+ * @package SkachCz\Imokutr3\Exception
  * @author Vladimir Skach
  */
 class ImokutrNetteMissingExtension extends \RuntimeException
@@ -11,12 +11,8 @@ class ImokutrNetteMissingExtension extends \RuntimeException
 
     public function __construct(string $message = null)
     {
-
-        $code = 5;
-        $message = 'The extension needs Nette Framework installed.';
-
-        parent::__construct($message, $code);
-
+        $message = 'This extension needs Nette Framework installed.';
+        parent::__construct($message, ExceptionCodes::MISSING_EXTENSION);
     }
 
 }

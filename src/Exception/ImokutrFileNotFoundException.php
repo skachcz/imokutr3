@@ -1,18 +1,15 @@
 <?php
 
-namespace SkachCz\Imokutr\Exception;
+namespace SkachCz\Imokutr3\Exception;
 
 /**
- * @package SkachCz\Imokutr\Exception
+ * @package SkachCz\Imokutr3\Exception
  * @author Vladimir Skach
  */
 class ImokutrFileNotFoundException extends \RuntimeException
 {
     public function __construct(string $path = null, string $message = null)
     {
-
-        $code = 1;
-
         if (null === $message) {
             if (null === $path) {
                 $message = 'Image file could not be found.';
@@ -23,6 +20,6 @@ class ImokutrFileNotFoundException extends \RuntimeException
             $message = sprintf($message, $path);
         }
 
-        parent::__construct($message, $code);
+        parent::__construct($message, ExceptionCodes::FILE_NOT_FOUND);
     }
 }

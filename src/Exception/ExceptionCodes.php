@@ -1,9 +1,9 @@
 <?php
 
-namespace SkachCz\Imokutr\Exception;
+namespace SkachCz\Imokutr3\Exception;
 
 /**
- * @package SkachCz\Imokutr\Exception
+ * @package SkachCz\Imokutr3\Exception
  * @author Vladimir Skach
  */
 class ExceptionCodes
