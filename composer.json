@@ -1,0 +1,41 @@
+{
+	"name": "skachcz/imokutr",
+	"type": "library",
+	"version": "1.1.1",
+	"description": "PHP image thumbnailer created with primary use for Nette framework, but also usable as a standalone PHP library",
+	"keywords": [
+		"nette",
+		"images",
+		"thumbnails"
+	],
+	"license": [
+		"MIT"
+	],
+	"authors": [
+		{
+			"name": "Vladimir Skach"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/skachcz/imokutr/issues"
+	},
+	"require": {
+		"php": ">=7"
+	},
+	"require-dev": {
+		"nette/di": "~3",
+		"latte/latte": "~2",
+		"tracy/tracy": "^2.3",
+		"phpstan/phpstan": "*",
+		"phpstan/phpstan-nette": "^1.3",
+		"phpstan/extension-installer": "^1.4"
+	},
+	"autoload": {
+		"classmap": ["src/"]
+	},
+	"config": {
+		"allow-plugins": {
+			"phpstan/extension-installer": true
+		}
+	}
+}
