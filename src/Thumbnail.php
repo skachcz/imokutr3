@@ -64,10 +64,6 @@ class Thumbnail
      */
     public function getThumbnailUrl(): string
     {
-
-        Debugger::barDump($this->config, 'config');
-        Debugger::barDump($this->image, 'image');
-
         return $this->config->thumbsRootRelativePath
             . ( $this->image->relpath == null ? '' : '/' . trim($this->image->relpath, '/') )
             . '/' . $this->getThumbnalFilename();
