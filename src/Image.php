@@ -114,6 +114,9 @@ class Image {
         $this->filename = $parts['basename'];
 
         $rpath = pathinfo($this->imagepath);
-        $this->relpath = ($rpath['dirname'] == '.' ? null : $rpath['dirname']);
+        if (array_key_exists('dirname', $rpath)) {
+            $this->relpath = ($rpath['dirname'] == '.' ? null : $rpath['dirname']);
+        }
+
     }
 }

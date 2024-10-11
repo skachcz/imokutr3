@@ -26,9 +26,7 @@ class Config {
 
     }
 
-    /**
-    * @return array
-    */
+    /*
     public function getConfigArray(): array {
         return [
             'originalRootPath' => $this->originalRootPath,
@@ -39,4 +37,5 @@ class Config {
             'qualityPng' => $this->qualityPng,
         ];
     }
+    */
 }
