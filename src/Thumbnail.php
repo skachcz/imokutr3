@@ -1,8 +1,10 @@
 <?php
 namespace SkachCz\Imokutr3;
 
+use GdImage;
 use SkachCz\Imokutr3\Config;
 use SkachCz\Imokutr3\Data\ThumbnailInfo;
+use SkachCz\Imokutr3\Exception\ImokutrFileNotFoundException;
 use SkachCz\Imokutr3\Image;
 use SkachCz\Imokutr3\ImageTools;
 use SkachCz\Imokutr3\Exception\ImokutrUnknownImageTypeException;
@@ -79,9 +81,8 @@ class Thumbnail {
 
     /**
      * Processes image and returns thumbnail data
-     * @return array
      */
-    public function processImage(bool $force = false) {
+    public function processImage(bool $force = false): ?ThumbnailInfo {
 
         $targetPath = $this->config->thumbsRootPath . '/' . $this->image->relpath;
         $targetFile = $targetPath . '/' . $this->getThumbnalFilename();
@@ -97,7 +98,10 @@ class Thumbnail {
 
         } else {
             // we will get dimensions from already existing file
-            list($this->width, $this->height) = getimagesize($targetFile);
+            $imageInfo =  getimagesize($targetFile);
+            $this->width = $imageInfo[0] ?? 0;
+            $this->height = $imageInfo[1] ?? 0;
+
             $this->isAvailable = TRUE;
         }
 
@@ -134,12 +138,16 @@ class Thumbnail {
 
         $src = $this->createImageFrom($this->image->fullpath, $type);
 
+        if ($src === false) {
+            throw new ImokutrFileNotFoundException($this->image->fullpath);
+        }
+
         // Cropping image, if needed:
-        if($this->fixedDimension == Image::DIM_CROP) {
+        if ($this->fixedDimension == Image::DIM_CROP) {
 
             $cr = ImageTools::cropSize($origWidth, $origHeight, $width, $height, $cropType);
 
-            $src2 = \imagecreatetruecolor($cr['width'], $cr['height']);
+            $src2 = \imagecreatetruecolor($cr->width, $cr->height);
 
             \imagealphablending($src2, false);
             \imagesavealpha($src2, true);
@@ -147,15 +155,15 @@ class Thumbnail {
             imagecopyresampled(
                 $src2, $src,
                 0, 0,
-                $cr['x'], $cr['y'],
-                $cr['width'], $cr['height'],
-                $cr['width'], $cr['height']
+                $cr->cropX, $cr->cropY,
+                $cr->width, $cr->height,
+                $cr->width, $cr->height
             );
 
             $src = $src2;
 
-            $origWidth = $cr["width"];
-            $origHeight = $cr["height"];
+            $origWidth = $cr->width;
+            $origHeight = $cr->height;
         }
 
         $newImgInfo = ImageTools::resizeRatio($origWidth, $origHeight, $width, $height, $this->fixedDimension);
@@ -187,7 +195,7 @@ class Thumbnail {
                 if ($tIndex >= 0) {
                     $tColor  = \imagecolorsforindex($src, $tIndex);
 
-                    $transparency = \imagecolorallocate($img, $tColor['red'], $tColor['green'], $tColor['blue']);
+                    $transparency = (int) \imagecolorallocate($img, $tColor['red'], $tColor['green'], $tColor['blue']);
                     \imagefill($img, 0, 0, $transparency);
                     \imagecolortransparent($img, $transparency);
                 } else {
@@ -220,7 +228,6 @@ class Thumbnail {
 
     /**
      * Creates new image resource
-     *
      * @return resource|false
      */
     public function createImageFrom(string $path, int $imageType = null) {

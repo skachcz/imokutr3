@@ -7,30 +7,18 @@ namespace SkachCz\Imokutr3;
  */
 class Config {
 
-    /** @var string */
-    public $originalRootPath;
-
-    /** @var string */
-    public $thumbsRootPath;
-
-    /** @var string */
-    public $thumbsRootRelativePath;
-
-    /** @var string */
-    public $defaultImageRelativePath;
-
-    /** @var int */
-    public $qualityJpeg;
-
-    /** @var int */
-    public $qualityPng;
-
+    public string $originalRootPath;
+    public string $thumbsRootPath;
+    public string $thumbsRootRelativePath;
+    public ?string $defaultImageRelativePath;
+    public int $qualityJpeg;
+    public int $qualityPng;
 
     public function __construct(string $originalRootPath, string $thumbsRootPath, string $thumbsRootRelativePath,
                     string $defaultImageRelativePath = null, int $qualityJpeg = 75, int $qualityPng = 6) {
 
-        $this->originalRootPath = $this->replaceAppRoot($originalRootPath);
-        $this->thumbsRootPath = $this->replaceAppRoot($thumbsRootPath);
+        $this->originalRootPath = $originalRootPath;
+        $this->thumbsRootPath = $thumbsRootPath;
         $this->thumbsRootRelativePath = $thumbsRootRelativePath;
         $this->defaultImageRelativePath = $defaultImageRelativePath;
         $this->qualityJpeg = $qualityJpeg;
@@ -41,7 +29,7 @@ class Config {
     /**
     * @return array
     */
-    public function getConfigArray() {
+    public function getConfigArray(): array {
         return [
             'originalRootPath' => $this->originalRootPath,
             'thumbsRootPath'  => $this->thumbsRootPath,
@@ -51,14 +39,4 @@ class Config {
             'qualityPng' => $this->qualityPng,
         ];
     }
-
-    public function replaceAppRoot($path) {
-
-        if (defined('WWW_DIR')) {
-            return str_replace("~", WWW_DIR, $path);
-        } else {
-            return $path;
-        }
-    }
-
 }

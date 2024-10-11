@@ -73,7 +73,8 @@ use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
     /**
      * helper for Nette macro
      */
-    public function macroThumbInterface($path = null, $width = null, $height = null, $fixedPar = 'w', $cropType = Image::CROP_CENTER, bool $force = false) {
+    public function macroThumbInterface(?string $path = null, ?int $width = null, ?int $height = null, string $fixedPar = 'w', int $cropType = Image::CROP_CENTER, bool $force = false): ?ThumbnailInfo
+    {
 
         if (!$this->config->defaultImageRelativePath && null === $path) {
             throw new ImokutrWrongMacroParameterException("1 (path)", "valid relative path to the image");

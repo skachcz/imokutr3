@@ -16,7 +16,7 @@ use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
  */
  class Html {
     /**
-     * @param $attributes null|array<string,string>
+     * @param null|array<string,string> $attributes
      */
     public static function img(ThumbnailInfo $img, string $alt = "", string $title = "", ?array $attributes = null): string
     {
