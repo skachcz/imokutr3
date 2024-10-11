@@ -38,8 +38,14 @@ class Imokutr
      *
      * @return string
      */
-    public function getThumbnailUrl(string $path, int $width, int $height, int $fixed = Image::DIM_WIDTH, int $cropType = Image::CROP_CENTER, bool $force = false)
-    {
+    public function getThumbnailUrl(
+        string $path,
+        int $width,
+        int $height,
+        int $fixed = Image::DIM_WIDTH,
+        int $cropType = Image::CROP_CENTER,
+        bool $force = false
+    ) {
 
         $image = new Image($this->config->originalRootPath, $path, $this->config->defaultImageRelativePath);
         $thumbnail = new Thumbnail($this->config, $image);
@@ -52,8 +58,14 @@ class Imokutr
     /**
      * Returns thumbnail array
      */
-    public function getThumbnail(string $path, int $width, int $height, string $fixedPar = 'w', int $cropType = Image::CROP_CENTER, bool $force = false): ?ThumbnailInfo
-    {
+    public function getThumbnail(
+        string $path,
+        int $width,
+        int $height,
+        string $fixedPar = 'w',
+        int $cropType = Image::CROP_CENTER,
+        bool $force = false
+    ): ?ThumbnailInfo {
 
         switch ($fixedPar) {
             case 'c':
@@ -79,8 +91,14 @@ class Imokutr
     /**
      * helper for Nette macro
      */
-    public function macroThumbInterface(?string $path = null, ?int $width = null, ?int $height = null, string $fixedPar = 'w', int $cropType = Image::CROP_CENTER, bool $force = false): ?ThumbnailInfo
-    {
+    public function macroThumbInterface(
+        ?string $path = null,
+        ?int $width = null,
+        ?int $height = null,
+        string $fixedPar = 'w',
+        int $cropType = Image::CROP_CENTER,
+        bool $force = false
+    ): ?ThumbnailInfo {
 
         if (!$this->config->defaultImageRelativePath && null === $path) {
             throw new ImokutrWrongMacroParameterException("1 (path)", "valid relative path to the image");
@@ -102,6 +120,13 @@ class Imokutr
             throw new ImokutrWrongMacroParameterException("4 (crop type)", 'integer between 0 - 8');
         }
 
-        return $this->getThumbnail(strval($path), intval($width), intval($height), strval($fixedPar), intval($cropType), $force);
+        return $this->getThumbnail(
+            strval($path),
+            intval($width),
+            intval($height),
+            strval($fixedPar),
+            intval($cropType),
+            $force
+        );
     }
 }

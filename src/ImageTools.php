@@ -14,8 +14,13 @@ use SkachCz\Imokutr3\Image;
  */
 class ImageTools
 {
-    public static function resizeRatio(int $width, int $height, int $newWidth, int $newHeight, int $fixedDimension): ImageInfo
-    {
+    public static function resizeRatio(
+        int $width,
+        int $height,
+        int $newWidth,
+        int $newHeight,
+        int $fixedDimension
+    ): ImageInfo {
 
         switch ($fixedDimension) {
             case Image::DIM_WIDTH:
@@ -35,8 +40,13 @@ class ImageTools
     /**
      * Returns cropped dimensions
      */
-    public static function cropSize(int $width, int $height, int $targetWidth, int $targetHeight, int $cropType = Image::CROP_CENTER): CropInfo
-    {
+    public static function cropSize(
+        int $width,
+        int $height,
+        int $targetWidth,
+        int $targetHeight,
+        int $cropType = Image::CROP_CENTER
+    ): CropInfo {
 
         // original image ratio
         $oRatio = $width / $height;

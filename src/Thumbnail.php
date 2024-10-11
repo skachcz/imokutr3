@@ -73,8 +73,12 @@ class Thumbnail
             . '/' . $this->getThumbnalFilename();
     }
 
-    public function setResize(int $width, int $height, int $fixedDimension = Image::DIM_WIDTH, int $cropType = Image::CROP_CENTER): void
-    {
+    public function setResize(
+        int $width,
+        int $height,
+        int $fixedDimension = Image::DIM_WIDTH,
+        int $cropType = Image::CROP_CENTER
+    ): void {
 
         $this->width = $width;
         $this->height = $height;
@@ -118,8 +122,16 @@ class Thumbnail
     public function getThumbnalFilename()
     {
 
-        return ltrim($this->image->filebase, '/') . "-" . $this->targetWidth . "x" . $this->targetHeight . "-" . $this->fixedDimension
-        . "-" . $this->cropType . "." . $this->image->fileext;
+        return ltrim($this->image->filebase, '/')
+                . "-" . $this->targetWidth
+                . "x"
+                . $this->targetHeight
+                . "-"
+                . $this->fixedDimension
+                . "-"
+                . $this->cropType
+                . "."
+                . $this->image->fileext;
     }
 
     /**
@@ -136,8 +148,13 @@ class Thumbnail
      *
      * @return string
      */
-    private function resizeImage(string $targetPath, int $width, int $height, int $type = null, int $cropType = Image::CROP_CENTER)
-    {
+    private function resizeImage(
+        string $targetPath,
+        int $width,
+        int $height,
+        int $type = null,
+        int $cropType = Image::CROP_CENTER
+    ) {
 
         $origWidth = $this->image->width;
         $origHeight = $this->image->height;
@@ -182,14 +199,36 @@ class Thumbnail
 
         switch ($type) {
             case IMAGETYPE_JPEG:
-                \imagecopyresampled($img, $src, 0, 0, 0, 0, $newImgInfo->width, $newImgInfo->height, $origWidth, $origHeight);
+                \imagecopyresampled(
+                    $img,
+                    $src,
+                    0,
+                    0,
+                    0,
+                    0,
+                    $newImgInfo->width,
+                    $newImgInfo->height,
+                    $origWidth,
+                    $origHeight
+                );
                 \imagejpeg($img, $targetPath, $this->config->qualityJpeg);
                 break;
 
             case IMAGETYPE_PNG:
                 \imagealphablending($img, false);
                 \imagesavealpha($img, true);
-                \imagecopyresampled($img, $src, 0, 0, 0, 0, $newImgInfo->width, $newImgInfo->height, $origWidth, $origHeight);
+                \imagecopyresampled(
+                    $img,
+                    $src,
+                    0,
+                    0,
+                    0,
+                    0,
+                    $newImgInfo->width,
+                    $newImgInfo->height,
+                    $origWidth,
+                    $origHeight
+                );
 
                 \imagepng($img, $targetPath, $this->config->qualityPng);
                 break;
@@ -209,7 +248,18 @@ class Thumbnail
                     \imagesavealpha($img, true);
                 }
 
-                \imagecopyresampled($img, $src, 0, 0, 0, 0, $newImgInfo->width, $newImgInfo->height, $origWidth, $origHeight);
+                \imagecopyresampled(
+                    $img,
+                    $src,
+                    0,
+                    0,
+                    0,
+                    0,
+                    $newImgInfo->width,
+                    $newImgInfo->height,
+                    $origWidth,
+                    $origHeight
+                );
 
                 \imagegif($img, $targetPath);
                 break;
