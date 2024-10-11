@@ -12,9 +12,10 @@ use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
  * Main class
  *
  * @package SkachCz\Imokutr
- * @author Vladimir Skach
+ * @author  Vladimir Skach
  */
- class Html {
+class Html
+{
     /**
      * @param null|array<string,string> $attributes
      */
@@ -24,16 +25,21 @@ use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
         $attText = "";
 
         if (($attributes !== null) && is_array($attributes)) {
-
-            foreach($attributes as $att => $val) {
+            foreach ($attributes as $att => $val) {
                 $attText .= sprintf('%s = "%s" ', $att, str_replace('"', '&quot;', $val));
             }
         }
 
-        $tag = sprintf('<img src="%s" width="%d" height="%d" alt="%s" title="%s" %s>',
-            $img->url, $img->width, $img->height, $alt, $title, $attText);
+        $tag = sprintf(
+            '<img src="%s" width="%d" height="%d" alt="%s" title="%s" %s>',
+            $img->url,
+            $img->width,
+            $img->height,
+            $alt,
+            $title,
+            $attText
+        );
 
         return $tag;
     }
-
 }

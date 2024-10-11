@@ -12,25 +12,34 @@ use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
  * Main class
  *
  * @package SkachCz\Imokutr
- * @author Vladimir Skach
+ * @author  Vladimir Skach
  */
- class Imokutr {
+class Imokutr
+{
 
-    /** @var Config */
+    /**
+     *
+     *
+     * @var Config
+     */
     public $config;
 
-    public function __construct(Config $config) {
+    public function __construct(Config $config)
+    {
         $this->config = $config;
     }
-    public function getConfig(): Config {
+    public function getConfig(): Config
+    {
         return $this->config;
     }
 
     /**
      * Returns thumbnail url
+     *
      * @return string
      */
-    public function getThumbnailUrl(string $path, int $width, int $height, int $fixed = Image::DIM_WIDTH, int $cropType = Image::CROP_CENTER, bool $force = false) {
+    public function getThumbnailUrl(string $path, int $width, int $height, int $fixed = Image::DIM_WIDTH, int $cropType = Image::CROP_CENTER, bool $force = false)
+    {
 
         $image = new Image($this->config->originalRootPath, $path, $this->config->defaultImageRelativePath);
         $thumbnail = new Thumbnail($this->config, $image);
@@ -38,16 +47,15 @@ use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
         $thumbnail->processImage($force);
 
         return $thumbnail->getThumbnailUrl();
-
     }
 
     /**
-    * Returns thumbnail array
-    */
-    public function getThumbnail(string $path, int $width, int $height, string $fixedPar = 'w', int $cropType = Image::CROP_CENTER, bool $force = false): ?ThumbnailInfo {
+     * Returns thumbnail array
+     */
+    public function getThumbnail(string $path, int $width, int $height, string $fixedPar = 'w', int $cropType = Image::CROP_CENTER, bool $force = false): ?ThumbnailInfo
+    {
 
-        switch($fixedPar) {
-
+        switch ($fixedPar) {
             case 'c':
                 $fixed = Image::DIM_CROP;
                 break;
@@ -58,7 +66,6 @@ use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
 
             default:
                 $fixed = Image::DIM_WIDTH;
-
         }
 
         $image = new Image($this->config->originalRootPath, $path, $this->config->defaultImageRelativePath);
@@ -67,7 +74,6 @@ use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
         $thumbnail->processImage($force);
 
         return $thumbnail->getThumbnailData();
-
     }
 
     /**
@@ -88,7 +94,7 @@ use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
             throw new ImokutrWrongMacroParameterException("2 (height)", "integer higher than 0");
         }
 
-        if ( !(in_array($fixedPar, ['w','h','c']) )) {
+        if (!(in_array($fixedPar, ['w','h','c']) )) {
             throw new ImokutrWrongMacroParameterException("3 (resize type)", '"w", "h" or "c"');
         }
 
@@ -97,8 +103,5 @@ use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
         }
 
         return $this->getThumbnail(strval($path), intval($width), intval($height), strval($fixedPar), intval($cropType), $force);
-
     }
-
-
 }

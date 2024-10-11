@@ -4,7 +4,7 @@ namespace SkachCz\Imokutr3\Data;
 
 /**
  * @package SkachCz\Imokutr3\Data
- * @author Vladimir Skach
+ * @author  Vladimir Skach
  */
 class ThumbnailInfo
 {

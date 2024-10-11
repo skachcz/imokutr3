@@ -9,9 +9,10 @@ use Tracy\Debugger;
 
 /**
  * @package SkachCz\Imokutr
- * @author Vladimir Skach
+ * @author  Vladimir Skach
  */
-class Image {
+class Image
+{
 
     const DIM_WIDTH = 1;
     const DIM_HEIGHT = 2;
@@ -57,14 +58,12 @@ class Image {
     public int $type;
 
     public function __construct(string $rootPath, string $imagePath, string $defaultImagePath = null)
-	{
+    {
         $fullpath = rtrim($rootPath, '/') . '/' . ltrim($imagePath, '/');
 
         // check if file exists
-        if ( ($imagePath == null) || (!file_exists($fullpath)) ){
-
+        if (($imagePath == null) || (!file_exists($fullpath))) {
             if ($defaultImagePath !== null) {
-
                 $fullpath = rtrim($rootPath, '/') . '/' . ltrim($defaultImagePath, '/');
 
                 if (!file_exists($fullpath)) {
@@ -72,11 +71,9 @@ class Image {
                 }
 
                 $imagePath = $defaultImagePath;
-
             } else {
                 throw new ImokutrFileNotFoundException($fullpath);
             }
-
         }
 
         // Debugger::barDump($this, "image");
@@ -85,24 +82,25 @@ class Image {
         $this->fullpath = $fullpath;
 
         $this->setImageInfo();
-
     }
 
     /**
      * Sets basic image properties
+     *
      * @return void
      */
-    private function setImageInfo() {
+    private function setImageInfo()
+    {
 
         $imageInfo = getimagesize($this->fullpath);
 
         $lastError = error_get_last();
-        if ($lastError !== null && strpos($lastError["message"], 'getimagesize(') === 0)
-        {
-           throw new ImokutrGetImageSizeFailedException($this->fullpath, $lastError["message"]);
+        if ($lastError !== null && strpos($lastError["message"], 'getimagesize(') === 0) {
+            throw new ImokutrGetImageSizeFailedException($this->fullpath, $lastError["message"]);
         }
 
-        $this->width = $imageInfo[0] ?? 0;;
+        $this->width = $imageInfo[0] ?? 0;
+        ;
         $this->height = $imageInfo[1] ?? 0;
         $this->type = $imageInfo[2] ?? 0;
 
@@ -117,6 +115,5 @@ class Image {
         if (array_key_exists('dirname', $rpath)) {
             $this->relpath = ($rpath['dirname'] == '.' ? null : $rpath['dirname']);
         }
-
     }
 }

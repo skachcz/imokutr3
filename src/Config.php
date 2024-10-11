@@ -3,9 +3,10 @@ namespace SkachCz\Imokutr3;
 
 /**
  * @package SkachCz\Imokutr3
- * @author Vladimir Skach
+ * @author  Vladimir Skach
  */
-class Config {
+class Config
+{
 
     public string $originalRootPath;
     public string $thumbsRootPath;
@@ -14,8 +15,14 @@ class Config {
     public int $qualityJpeg;
     public int $qualityPng;
 
-    public function __construct(string $originalRootPath, string $thumbsRootPath, string $thumbsRootRelativePath,
-                    string $defaultImageRelativePath, int $qualityJpeg = 75, int $qualityPng = 6) {
+    public function __construct(
+        string $originalRootPath,
+        string $thumbsRootPath,
+        string $thumbsRootRelativePath,
+        string $defaultImageRelativePath,
+        int $qualityJpeg = 75,
+        int $qualityPng = 6
+    ) {
 
         $this->originalRootPath = $originalRootPath;
         $this->thumbsRootPath = $thumbsRootPath;
@@ -23,7 +30,6 @@ class Config {
         $this->defaultImageRelativePath = $defaultImageRelativePath;
         $this->qualityJpeg = $qualityJpeg;
         $this->qualityPng = $qualityPng;
-
     }
 
     /*

@@ -4,7 +4,7 @@ namespace SkachCz\Imokutr3\Exception;
 
 /**
  * @package SkachCz\Imokutr3\Exception
- * @author Vladimir Skach
+ * @author  Vladimir Skach
  */
 class ImokutrWrongMacroParameterException extends \RuntimeException
 {
@@ -14,5 +14,4 @@ class ImokutrWrongMacroParameterException extends \RuntimeException
         $message = sprintf('Macro parameter %s must be %s.', $parameter, $limitText);
         parent::__construct($message, ExceptionCodes::WRONG_MACRO_PARAMETER);
     }
-
 }

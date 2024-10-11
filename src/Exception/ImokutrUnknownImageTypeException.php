@@ -4,7 +4,7 @@ namespace SkachCz\Imokutr3\Exception;
 
 /**
  * @package SkachCz\Imokutr3\Exception
- * @author Vladimir Skach
+ * @author  Vladimir Skach
  */
 class ImokutrUnknownImageTypeException extends \RuntimeException
 {
@@ -21,5 +21,4 @@ class ImokutrUnknownImageTypeException extends \RuntimeException
 
         parent::__construct($message, ExceptionCodes::UNKNOWN_IMAGE_TYPE);
     }
-
 }
