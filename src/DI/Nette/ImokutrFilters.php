@@ -1,7 +1,7 @@
 <?php
 namespace SkachCz\Imokutr3\DI\Nette;
 
-use SkachCz\Imokutr3\Config;
+use SkachCz\Imokutr3\ImokutrConfig;
 use SkachCz\Imokutr3\Image;
 use SkachCz\Imokutr3\Thumbnail;
 
@@ -11,10 +11,10 @@ use SkachCz\Imokutr3\Thumbnail;
  */
 class ImokutrFilters {
 
-    /** @var Config */
+    /** @var ImokutrConfig */
     public $config;
 
-    public function __construct(Config $config)
+    public function __construct(ImokutrConfig $config)
 	{
         $this->config = $config;
     }

@@ -1,9 +1,11 @@
 <?php
 namespace SkachCz\Imokutr3\DI\Nette;
 
-use SkachCz\Imokutr\Config;
+use SkachCz\Imokutr\ImokutrConfig;
 use SkachCz\Imokutr\Image;
 use SkachCz\Imokutr\Thumbnail;
+
+use Tracy\Debugger;
 
 /**
  * @package SkachCz\Imokutr\Nette

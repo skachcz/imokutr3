@@ -1,7 +1,7 @@
 <?php
 namespace SkachCz\Imokutr3;
 
-use SkachCz\Imokutr3\Config;
+use SkachCz\Imokutr3\ImokutrConfig;
 use SkachCz\Imokutr3\Data\ThumbnailInfo;
 use SkachCz\Imokutr3\Image;
 use SkachCz\Imokutr3\Thumbnail;

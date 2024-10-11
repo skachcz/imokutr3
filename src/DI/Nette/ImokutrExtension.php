@@ -2,7 +2,9 @@
 namespace SkachCz\Imokutr3\DI\Nette;
 
 use SkachCz\Imokutr3\Imokutr;
-use SkachCz\Imokutr3\Config;
+use SkachCz\Imokutr3\ImokutrConfig;
+use SkachCz\Imokutr3\DI\Nette\ExtensionTools;
+
 use SkachCz\Imokutr3\Exception\ImokutrNetteMissingExtension;
 
 use SkachCz\Imokutr3\DI\Nette\ImokutrFilters;
@@ -12,8 +14,7 @@ use Nette\Schema\Schema;
 use Nette\Schema\Expect;
 
 use Nette\DI\CompilerExtension;
-
-
+use Nette\DI\Extensions\DefinitionSchema;
 use Tracy\Debugger;
 
 // if (!class_exists('Nette\DI\CompilerExtension')) {
@@ -28,12 +29,7 @@ use Tracy\Debugger;
  */
 final class ImokutrExtension extends CompilerExtension
 {
-    /**
-     * @return Config
-     */
-    public function getConfig() {
-        return $this->config;
-    }
+    public ImokutrConfig $imokutrConfig;
 
     /**
      * @return void
@@ -49,9 +45,10 @@ final class ImokutrExtension extends CompilerExtension
         $builder->addDefinition($this->prefix('imokutrProvider'))
             ->setFactory(Imokutr::class, [$this->config]);
         */
-        $builder->addDefinition($this->prefix('articles'))
-            ->setFactory(Imokutr::class, ['@connection']) // or setCreator()
-            ->addSetup('setLogger', ['@logger']);
+        $this->imokutrConfig = ExtensionTools::createConfigFromArray($this->config);
+
+        $builder->addDefinition($this->prefix('imokutr3'))
+            ->setFactory(Imokutr::class, [$this->imokutrConfig]);
 
     }
 
@@ -78,8 +75,7 @@ final class ImokutrExtension extends CompilerExtension
             $factory = $builder->getDefinition('nette.latteFactory');
 
             // filter registration:
-            $filters = new ImokutrFilters($this->config);
-
+            $filters = new ImokutrFilters($this->imokutrConfig);
 
             if ($methodExists) {
                 /* nette 3.0 */
@@ -90,7 +86,7 @@ final class ImokutrExtension extends CompilerExtension
 
             // macro registration:
             $method = '?->onCompile[] = function($engine)  {
-                SkachCz\Imokutr\Nette\ImokutrMacros::install($engine->getCompiler());
+                SkachCz\Imokutr3\DI\Nette\ImokutrMacros::install($engine->getCompiler());
             }';
 
             if ($methodExists) {
@@ -107,6 +103,17 @@ final class ImokutrExtension extends CompilerExtension
     {
         Debugger::log("imokutr start", 'imokutr');
 
+        return Expect::from(new ImokutrConfig, [
+			'originalRootPath' => Expect::string(),
+            'thumbsRootPath' => Expect::string(),
+            'thumbsRootRelativePath' => Expect::string(),
+            'defaultImageRelativePath' => Expect::string()->default('default.png'),
+            'qualityJpeg' => Expect::int()->default(75),
+            'qualityPng' => Expect::int()->default(6),
+        ]);
+
+
+        /*
         return Expect::structure([
 			'originalRootPath' => Expect::string(),
             'thumbsRootPath' => Expect::string(),
@@ -115,6 +122,7 @@ final class ImokutrExtension extends CompilerExtension
             'qualityJpeg' => Expect::int()->default(75),
             'qualityPng' => Expect::int()->default(6),
 		]);
+        */
     }
 
 }

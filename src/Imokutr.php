@@ -1,8 +1,9 @@
 <?php
 namespace SkachCz\Imokutr3;
 
-use SkachCz\Imokutr3\Config;
+use SkachCz\Imokutr3\ImokutrConfig;
 use SkachCz\Imokutr3\Data\ThumbnailInfo;
+use SkachCz\Imokutr3\DI\Nette\ExtensionTools;
 use SkachCz\Imokutr3\Image;
 use SkachCz\Imokutr3\Thumbnail;
 
@@ -20,15 +21,16 @@ class Imokutr
     /**
      *
      *
-     * @var Config
+     * @var ImokutrConfig
      */
     public $config;
 
-    public function __construct(Config $config)
+    public function __construct(ImokutrConfig $config, ?array $importParams = null)
     {
         $this->config = $config;
     }
-    public function getConfig(): Config
+
+    public function getConfig(): ImokutrConfig
     {
         return $this->config;
     }

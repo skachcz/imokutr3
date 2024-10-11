@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace SkachCz\Imokutr3;
 
 use GdImage;
-use SkachCz\Imokutr3\Config;
+use SkachCz\Imokutr3\ImokutrConfig;
 use SkachCz\Imokutr3\Data\ThumbnailInfo;
 use SkachCz\Imokutr3\Exception\ImokutrFileNotFoundException;
 use SkachCz\Imokutr3\Image;
@@ -22,7 +22,7 @@ use Tracy\Debugger;
 class Thumbnail
 {
 
-    public Config $config;
+    public ImokutrConfig $config;
 
     public Image $image;
 
@@ -40,7 +40,7 @@ class Thumbnail
 
     public int $cropType;
 
-    public function __construct(Config $config, Image $image)
+    public function __construct(ImokutrConfig $config, Image $image)
     {
         $this->config = $config;
         $this->image = $image;
