@@ -1,5 +1,5 @@
 <?php
-namespace SkachCz\Imokutr3\Extension\Nette;
+namespace SkachCz\Imokutr3\DI\Nette;
 
 use SkachCz\Imokutr\Config;
 use SkachCz\Imokutr\Image;

@@ -1,26 +1,24 @@
 <?php
-namespace SkachCz\Imokutr3\Extension\Nette;
+namespace SkachCz\Imokutr3\DI\Nette;
 
 use SkachCz\Imokutr3\Imokutr;
 use SkachCz\Imokutr3\Config;
-
 use SkachCz\Imokutr3\Exception\ImokutrNetteMissingExtension;
 
-use SkachCz\Imokutr3\Extension\Nette\ImokutrFilters;
-use SkachCz\Imokutr3\Extension\Nette\ImokutrMacros;
-
-use Nette\DI\Definitions\Definition;
+use SkachCz\Imokutr3\DI\Nette\ImokutrFilters;
+use SkachCz\Imokutr3\DI\Nette\ImokutrMacros;
 
 use Nette\Schema\Schema;
 use Nette\Schema\Expect;
 
 use Nette\DI\CompilerExtension;
-use Nette\PhpGenerator\ClassType;
-use Nette\Utils\Validators;
 
-if (!class_exists('Nette\DI\CompilerExtension')) {
-    throw new ImokutrNetteMissingExtension();
-}
+
+use Tracy\Debugger;
+
+// if (!class_exists('Nette\DI\CompilerExtension')) {
+    //throw new ImokutrNetteMissingExtension();
+// }
 
 /**
  * Imokutr Nette extension (for Nette 2.4)
@@ -51,6 +49,10 @@ final class ImokutrExtension extends CompilerExtension
         $builder->addDefinition($this->prefix('imokutrProvider'))
             ->setFactory(Imokutr::class, [$this->config]);
         */
+        $builder->addDefinition($this->prefix('articles'))
+            ->setFactory(Imokutr::class, ['@connection']) // or setCreator()
+            ->addSetup('setLogger', ['@logger']);
+
     }
 
     /**
@@ -103,6 +105,8 @@ final class ImokutrExtension extends CompilerExtension
 
     public function getConfigSchema(): Schema
     {
+        Debugger::log("imokutr start", 'imokutr');
+
         return Expect::structure([
 			'originalRootPath' => Expect::string(),
             'thumbsRootPath' => Expect::string(),
