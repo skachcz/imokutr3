@@ -68,13 +68,13 @@ class Image {
                 $fullpath = rtrim($rootPath, '/') . '/' . ltrim($defaultImagePath, '/');
 
                 if (!file_exists($fullpath)) {
-                    throw new ImokutrFileNotFoundException($fullpath);
+                    throw new ImokutrFileNotFoundException($fullpath, "Default image file %s doesn't exist");
                 }
 
                 $imagePath = $defaultImagePath;
 
             } else {
-                throw new ImokutrFileNotFoundException($fullpath, "Image file %s doesn't exist");
+                throw new ImokutrFileNotFoundException($fullpath);
             }
 
         }

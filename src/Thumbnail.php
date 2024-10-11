@@ -138,7 +138,7 @@ class Thumbnail {
 
         $src = $this->createImageFrom($this->image->fullpath, $type);
 
-        if ($src === false) {
+        if (empty($src)) {
             throw new ImokutrFileNotFoundException($this->image->fullpath);
         }
 

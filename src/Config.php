@@ -10,12 +10,12 @@ class Config {
     public string $originalRootPath;
     public string $thumbsRootPath;
     public string $thumbsRootRelativePath;
-    public ?string $defaultImageRelativePath;
+    public string $defaultImageRelativePath;
     public int $qualityJpeg;
     public int $qualityPng;
 
     public function __construct(string $originalRootPath, string $thumbsRootPath, string $thumbsRootRelativePath,
-                    string $defaultImageRelativePath = null, int $qualityJpeg = 75, int $qualityPng = 6) {
+                    string $defaultImageRelativePath, int $qualityJpeg = 75, int $qualityPng = 6) {
 
         $this->originalRootPath = $originalRootPath;
         $this->thumbsRootPath = $thumbsRootPath;
