@@ -50,9 +50,9 @@ final class ImokutrMacros extends \Latte\Macros\MacroSet {
             $imk_th = $this->global->imokutrProvider->macroThumbInterface(%node.word, $imk_width, $imk_height, $imk_fixed, $imk_crop);
 
             $imk_content = ob_get_clean();
-            $imk_content = str_replace("%width%", $imk_th["width"], $imk_content);
-            $imk_content = str_replace("%height%", $imk_th["height"], $imk_content);
-            $imk_content = str_replace("%url%", $imk_th["url"], $imk_content);
+            $imk_content = str_replace("%width%", $imk_th->width, $imk_content);
+            $imk_content = str_replace("%height%", $imk_th->height, $imk_content);
+            $imk_content = str_replace("%url%", $imk_th->url, $imk_content);
             echo $imk_content;
             ';
 

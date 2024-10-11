@@ -64,9 +64,11 @@ class Thumbnail
      */
     public function getThumbnailUrl(): string
     {
-        return $this->config->thumbsRootRelativePath
+        $path = $this->config->thumbsRootRelativePath
             . ( $this->image->relpath == null ? '' : '/' . trim($this->image->relpath, '/') )
             . '/' . $this->getThumbnalFilename();
+
+        return $path;
     }
 
     public function setResize(

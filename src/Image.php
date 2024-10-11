@@ -61,6 +61,8 @@ class Image
     {
         $fullpath = rtrim($rootPath, '/') . '/' . ltrim($imagePath, '/');
 
+        Debugger::barDump($fullpath, 'image path');
+
         // check if file exists
         if (($imagePath == null) || (!file_exists($fullpath))) {
             if ($defaultImagePath !== null) {

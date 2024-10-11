@@ -7,6 +7,8 @@ use SkachCz\Imokutr3\DI\Nette\ExtensionTools;
 use SkachCz\Imokutr3\Image;
 use SkachCz\Imokutr3\Thumbnail;
 
+use Tracy\Debugger;
+
 use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
 
 /**
@@ -122,7 +124,7 @@ class Imokutr
             throw new ImokutrWrongMacroParameterException("4 (crop type)", 'integer between 0 - 8');
         }
 
-        return $this->getThumbnail(
+        $thumb = $this->getThumbnail(
             strval($path),
             intval($width),
             intval($height),
@@ -130,5 +132,9 @@ class Imokutr
             intval($cropType),
             $force
         );
+
+        Debugger::barDump($thumb, 'thumb');
+
+        return $thumb;
     }
 }
