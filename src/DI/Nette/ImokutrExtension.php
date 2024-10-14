@@ -25,7 +25,7 @@ use Tracy\Debugger;
  * Imokutr Nette extension (for Nette 2.4)
  *
  * @package SkachCz\Imokutr\Nette
- * @author Vladimir Skach
+ * @author  Vladimir Skach
  */
 final class ImokutrExtension extends CompilerExtension
 {
@@ -103,25 +103,27 @@ final class ImokutrExtension extends CompilerExtension
     {
         Debugger::log("imokutr start", 'imokutr');
 
-        return Expect::from(new ImokutrConfig, [
-			'originalRootPath' => Expect::string(),
+        return Expect::from(
+            new ImokutrConfig, [
+            'originalRootPath' => Expect::string(),
+            'thumbsRootPath' => Expect::string(),
+            'thumbsRootRelativePath' => Expect::string(),
+            'defaultImageRelativePath' => Expect::string()->default('default.png'),
+            'qualityJpeg' => Expect::int()->default(75),
+            'qualityPng' => Expect::int()->default(6),
+            ]
+        );
+
+
+        /*
+        return Expect::structure([
+        'originalRootPath' => Expect::string(),
             'thumbsRootPath' => Expect::string(),
             'thumbsRootRelativePath' => Expect::string(),
             'defaultImageRelativePath' => Expect::string()->default('default.png'),
             'qualityJpeg' => Expect::int()->default(75),
             'qualityPng' => Expect::int()->default(6),
         ]);
-
-
-        /*
-        return Expect::structure([
-			'originalRootPath' => Expect::string(),
-            'thumbsRootPath' => Expect::string(),
-            'thumbsRootRelativePath' => Expect::string(),
-            'defaultImageRelativePath' => Expect::string()->default('default.png'),
-            'qualityJpeg' => Expect::int()->default(75),
-            'qualityPng' => Expect::int()->default(6),
-		]);
         */
     }
 

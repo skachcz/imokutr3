@@ -9,18 +9,20 @@ use Tracy\Debugger;
 
 /**
  * @package SkachCz\Imokutr\Nette
- * @author Vladimir Skach
+ * @author  Vladimir Skach
  */
-final class ImokutrMacros extends \Latte\Macros\MacroSet {
+final class ImokutrMacros extends \Latte\Macros\MacroSet
+{
 
     /**
      * Install macro
+     *
      * @return static
      */
     public static function install(\Latte\Compiler $compiler)
     {
         $set = new static($compiler);
-        $set->addMacro('imoTag', [$set, 'imoTag'], [$set, 'imoTag'] );
+        $set->addMacro('imoTag', [$set, 'imoTag'], [$set, 'imoTag']);
 
         return $set;
     }

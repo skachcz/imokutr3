@@ -196,74 +196,74 @@ class Thumbnail
         $img = \imagecreatetruecolor($newImgInfo->width, $newImgInfo->height);
 
         switch ($type) {
-            case IMAGETYPE_JPEG:
-                \imagecopyresampled(
-                    $img,
-                    $src,
-                    0,
-                    0,
-                    0,
-                    0,
-                    $newImgInfo->width,
-                    $newImgInfo->height,
-                    $origWidth,
-                    $origHeight
-                );
-                \imagejpeg($img, $targetPath, $this->config->qualityJpeg);
-                break;
+        case IMAGETYPE_JPEG:
+            \imagecopyresampled(
+                $img,
+                $src,
+                0,
+                0,
+                0,
+                0,
+                $newImgInfo->width,
+                $newImgInfo->height,
+                $origWidth,
+                $origHeight
+            );
+            \imagejpeg($img, $targetPath, $this->config->qualityJpeg);
+            break;
 
-            case IMAGETYPE_PNG:
+        case IMAGETYPE_PNG:
+            \imagealphablending($img, false);
+            \imagesavealpha($img, true);
+            \imagecopyresampled(
+                $img,
+                $src,
+                0,
+                0,
+                0,
+                0,
+                $newImgInfo->width,
+                $newImgInfo->height,
+                $origWidth,
+                $origHeight
+            );
+
+            \imagepng($img, $targetPath, $this->config->qualityPng);
+            break;
+
+        case IMAGETYPE_GIF:
+            // check transparency
+            $tIndex = imagecolortransparent($src);
+
+            if ($tIndex >= 0) {
+                $tColor  = \imagecolorsforindex($src, $tIndex);
+
+                $transparency = (int) \imagecolorallocate($img, $tColor['red'], $tColor['green'], $tColor['blue']);
+                \imagefill($img, 0, 0, $transparency);
+                \imagecolortransparent($img, $transparency);
+            } else {
                 \imagealphablending($img, false);
                 \imagesavealpha($img, true);
-                \imagecopyresampled(
-                    $img,
-                    $src,
-                    0,
-                    0,
-                    0,
-                    0,
-                    $newImgInfo->width,
-                    $newImgInfo->height,
-                    $origWidth,
-                    $origHeight
-                );
+            }
 
-                \imagepng($img, $targetPath, $this->config->qualityPng);
-                break;
+            \imagecopyresampled(
+                $img,
+                $src,
+                0,
+                0,
+                0,
+                0,
+                $newImgInfo->width,
+                $newImgInfo->height,
+                $origWidth,
+                $origHeight
+            );
 
-            case IMAGETYPE_GIF:
-                // check transparency
-                $tIndex = imagecolortransparent($src);
+            \imagegif($img, $targetPath);
+            break;
 
-                if ($tIndex >= 0) {
-                    $tColor  = \imagecolorsforindex($src, $tIndex);
-
-                    $transparency = (int) \imagecolorallocate($img, $tColor['red'], $tColor['green'], $tColor['blue']);
-                    \imagefill($img, 0, 0, $transparency);
-                    \imagecolortransparent($img, $transparency);
-                } else {
-                    \imagealphablending($img, false);
-                    \imagesavealpha($img, true);
-                }
-
-                \imagecopyresampled(
-                    $img,
-                    $src,
-                    0,
-                    0,
-                    0,
-                    0,
-                    $newImgInfo->width,
-                    $newImgInfo->height,
-                    $origWidth,
-                    $origHeight
-                );
-
-                \imagegif($img, $targetPath);
-                break;
-
-            default:
-                throw new ImokutrUnknownImageTypeException($type, $targetPath);
+        default:
+            throw new ImokutrUnknownImageTypeException($type, $targetPath);
         }
 
 
@@ -289,17 +289,17 @@ class Thumbnail
     {
 
         switch ($imageType) {
-            case IMAGETYPE_JPEG:
-                return \imagecreatefromjpeg($path);
+        case IMAGETYPE_JPEG:
+            return \imagecreatefromjpeg($path);
 
-            case IMAGETYPE_PNG:
-                return \imagecreatefrompng($path);
+        case IMAGETYPE_PNG:
+            return \imagecreatefrompng($path);
 
-            case IMAGETYPE_GIF:
-                return \imagecreatefromgif($path);
+        case IMAGETYPE_GIF:
+            return \imagecreatefromgif($path);
 
-            default:
-                throw new ImokutrUnknownImageTypeException($imageType, $path);
+        default:
+            throw new ImokutrUnknownImageTypeException($imageType, $path);
         }
     }
 }

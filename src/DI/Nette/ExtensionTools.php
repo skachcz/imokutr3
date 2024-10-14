@@ -24,7 +24,7 @@ use Tracy\Debugger;
  * Imokutr Nette extension (for Nette 2.4)
  *
  * @package SkachCz\Imokutr\Nette
- * @author Vladimir Skach
+ * @author  Vladimir Skach
  */
 class ExtensionTools
 {
