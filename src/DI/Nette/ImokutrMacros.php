@@ -15,7 +15,7 @@ final class ImokutrMacros extends \Latte\Macros\MacroSet {
 
     /**
      * Install macro
-     *
+     * @return static
      */
     public static function install(\Latte\Compiler $compiler)
     {
@@ -34,7 +34,7 @@ final class ImokutrMacros extends \Latte\Macros\MacroSet {
      *
      * @return string
      */
-    public function imoTag(\Latte\MacroNode $node, \Latte\PhpWriter $writer)
+    public function imoTag(\Latte\MacroNode $node, \Latte\PhpWriter $writer): string
     {
 
         if ($node->closing) {

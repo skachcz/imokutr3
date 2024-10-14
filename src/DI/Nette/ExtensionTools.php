@@ -28,7 +28,9 @@ use Tracy\Debugger;
  */
 class ExtensionTools
 {
-
+    /**
+     * @param array|object $parameters
+     */
     public static function createConfigFromArray(object $parameters): ImokutrConfig
     {
             $imokutrConfig = new ImokutrConfig(

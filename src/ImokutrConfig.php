@@ -22,7 +22,7 @@ class ImokutrConfig
         string $defaultImageRelativePath,
         int $qualityJpeg = 75,
         int $qualityPng = 6
-    ) {
+    ): void {
 
         $this->originalRootPath = $originalRootPath;
         $this->thumbsRootPath = $thumbsRootPath;
@@ -31,14 +31,4 @@ class ImokutrConfig
         $this->qualityJpeg = $qualityJpeg;
         $this->qualityPng = $qualityPng;
     }
-    public function setFromArray(array $parameters): void
-    {
-            $this->originalRootPath = $parameters['originalRootPath'];
-            $this->thumbsRootPath = $parameters['thumbsRootPath'];
-            $this->thumbsRootRelativePath = $parameters['thumbsRootRelativePath'];
-            $this->defaultImageRelativePath = $parameters['defaultImageRelativePath'];
-            $this->qualityJpeg = $parameters['qualityJpeg'];
-            $this->qualityPng = $parameters['qualityPng'];
-    }
-
 }

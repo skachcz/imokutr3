@@ -27,7 +27,7 @@ class Imokutr
      */
     public $config;
 
-    public function __construct(ImokutrConfig $config, ?array $importParams = null)
+    public function __construct(ImokutrConfig $config)
     {
         $this->config = $config;
     }
