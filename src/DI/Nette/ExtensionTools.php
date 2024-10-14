@@ -44,5 +44,4 @@ class ExtensionTools
 
             return $imokutrConfig;
     }
-
 }

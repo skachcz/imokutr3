@@ -49,7 +49,6 @@ final class ImokutrExtension extends CompilerExtension
 
         $builder->addDefinition($this->prefix('imokutr3'))
             ->setFactory(Imokutr::class, [$this->imokutrConfig]);
-
     }
 
     /**
@@ -64,14 +63,14 @@ final class ImokutrExtension extends CompilerExtension
         if ($methodExists) {
             /* nette 3.0: */
             $builder->getDefinition('latte.latteFactory')
-                ->getResultDefinition()->addSetup('addProvider', ['imokutrProvider', $this->prefix('@imokutrProvider')]);
+                ->getResultDefinition()
+                ->addSetup('addProvider', ['imokutrProvider', $this->prefix('@imokutrProvider')]);
         } else {
             $builder->getDefinition('latte.latteFactory')
                 ->addSetup('addProvider', ['imokutrProvider', $this->prefix('@imokutrProvider')]);
         }
 
         if ($builder->hasDefinition('nette.latteFactory')) {
-
             $factory = $builder->getDefinition('nette.latteFactory');
 
             // filter registration:
@@ -95,7 +94,6 @@ final class ImokutrExtension extends CompilerExtension
             } else {
                 $factory->addSetup($method, ['@self']);
             }
-
         }
     }
 
@@ -104,7 +102,8 @@ final class ImokutrExtension extends CompilerExtension
         Debugger::log("imokutr start", 'imokutr');
 
         return Expect::from(
-            new ImokutrConfig, [
+            new ImokutrConfig,
+            [
             'originalRootPath' => Expect::string(),
             'thumbsRootPath' => Expect::string(),
             'thumbsRootRelativePath' => Expect::string(),
@@ -126,5 +125,4 @@ final class ImokutrExtension extends CompilerExtension
         ]);
         */
     }
-
 }

@@ -40,7 +40,6 @@ final class ImokutrMacros extends \Latte\Macros\MacroSet
     {
 
         if ($node->closing) {
-
             $code = '
             $args = %node.array;
 
@@ -49,7 +48,8 @@ final class ImokutrMacros extends \Latte\Macros\MacroSet
             $imk_fixed = isset($args[2]) ? $args[2] : "w";
             $imk_crop = array_key_exists(3, $args) ? $args[3] : 0;
 
-            $imk_th = $this->global->imokutrProvider->macroThumbInterface(%node.word, $imk_width, $imk_height, $imk_fixed, $imk_crop);
+            $imk_th = $this->global
+                ->imokutrProvider->macroThumbInterface(%node.word, $imk_width, $imk_height, $imk_fixed, $imk_crop);
 
             $imk_content = ob_get_clean();
             $imk_content = str_replace("%width%", $imk_th->width, $imk_content);
@@ -57,7 +57,6 @@ final class ImokutrMacros extends \Latte\Macros\MacroSet
             $imk_content = str_replace("%url%", $imk_th->url, $imk_content);
             echo $imk_content;
             ';
-
         } else {
             $code = "ob_start();";
         }
@@ -65,7 +64,5 @@ final class ImokutrMacros extends \Latte\Macros\MacroSet
         return $writer->write(
             $code
         );
-
     }
-
 }
