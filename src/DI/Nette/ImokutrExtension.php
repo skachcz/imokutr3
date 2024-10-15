@@ -53,13 +53,8 @@ final class ImokutrExtension extends CompilerExtension
     {
         $builder = $this->getContainerBuilder();
 
-        /** @-var FactoryDefinition */
-        /** @- var Nette\Bridges\ApplicationLatte\LatteFactory */
-        // $latteFactory = $builder->getDefinitionByType(Engine::class);
+        /** @var FactoryDefinition */
         $latteFactory = $builder->getDefinition('latte.latteFactory');
-
-        Debugger::barDump($latteFactory, 'latte filters');
-
         $latteFactory->getResultDefinition()
                     ->addSetup('addProvider', ['imokutrProvider', $this->prefix('@imokutrProvider')]);
 
