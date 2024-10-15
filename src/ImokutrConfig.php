@@ -5,15 +5,20 @@ namespace SkachCz\Imokutr3;
  * @package SkachCz\Imokutr3
  * @author  Vladimir Skach
  */
-class ImokutrConfig
+class ImokutrConfig extends \stdClass
 {
 
-    public string $originalRootPath;
-    public string $thumbsRootPath;
-    public string $thumbsRootRelativePath;
-    public string $defaultImageRelativePath;
+    public string $originalRootPath = "";
+    public string $thumbsRootPath = "";
+    public string $thumbsRootRelativePath = "";
+    public string $defaultImageRelativePath = "";
     public int $qualityJpeg = 75;
     public int $qualityPng = 6;
+
+
+    public function __construct()
+    {
+    }
 
     public function setConfig(
         string $originalRootPath,

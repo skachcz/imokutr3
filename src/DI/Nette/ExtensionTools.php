@@ -31,9 +31,11 @@ class ExtensionTools
     /**
      * @param array|object $parameters
      */
-    public static function createConfigFromArray(object $parameters): ImokutrConfig
+    public static function createConfigFromArray($parameters): ImokutrConfig
     {
-            $imokutrConfig = new ImokutrConfig(
+        $imokutrConfig = new ImokutrConfig();
+
+        $imokutrConfig->setConfig(
                 $parameters->originalRootPath,
                 $parameters->thumbsRootPath,
                 $parameters->thumbsRootRelativePath,
@@ -41,6 +43,8 @@ class ExtensionTools
                 $parameters->qualityJpeg,
                 $parameters->qualityPng
             );
+
+            Debugger::barDump($imokutrConfig, 'imk config');
 
             return $imokutrConfig;
     }

@@ -38,16 +38,18 @@ final class ImokutrExtension extends CompilerExtension
     {
         $builder = $this->getContainerBuilder();
 
+        Debugger::barDump($this->config, "load config imokutr");
+
         //imokutr config provider:
-        $builder->addDefinition($this->prefix('imokutrProvider'))
-            ->setFactory(Imokutr::class, [$this->config]);
+        // $builder->addDefinition($this->prefix('imokutrProvider'))
+            // ->setFactory(Imokutr::class, [$this->config]);
         /*
         $builder->addDefinition($this->prefix('imokutrProvider'))
             ->setFactory(Imokutr::class, [$this->config]);
         */
         $this->imokutrConfig = ExtensionTools::createConfigFromArray($this->config);
 
-        $builder->addDefinition($this->prefix('imokutr3'))
+        $builder->addDefinition($this->prefix('imokutrProvider'))
             ->setFactory(Imokutr::class, [$this->imokutrConfig]);
     }
 
@@ -99,23 +101,7 @@ final class ImokutrExtension extends CompilerExtension
 
     public function getConfigSchema(): Schema
     {
-        Debugger::log("imokutr start", 'imokutr');
-
-        return Expect::from(
-            new ImokutrConfig,
-            [
-            'originalRootPath' => Expect::string(),
-            'thumbsRootPath' => Expect::string(),
-            'thumbsRootRelativePath' => Expect::string(),
-            'defaultImageRelativePath' => Expect::string()->default('default.png'),
-            'qualityJpeg' => Expect::int()->default(75),
-            'qualityPng' => Expect::int()->default(6),
-            ]
-        );
-
-
-        /*
-        return Expect::structure([
+        $scheme = Expect::structure([
         'originalRootPath' => Expect::string(),
             'thumbsRootPath' => Expect::string(),
             'thumbsRootRelativePath' => Expect::string(),
@@ -123,6 +109,9 @@ final class ImokutrExtension extends CompilerExtension
             'qualityJpeg' => Expect::int()->default(75),
             'qualityPng' => Expect::int()->default(6),
         ]);
-        */
+
+        Debugger::log($scheme, "imokutr scheme");
+
+        return $scheme;
     }
 }
