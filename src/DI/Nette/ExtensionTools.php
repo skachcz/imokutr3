@@ -39,13 +39,13 @@ class ExtensionTools
         $imokutrConfig = new ImokutrConfig();
 
         $imokutrConfig->setConfig(
-                $parameters->originalRootPath ?? '',
-                $parameters->thumbsRootPath ?? '',
-                $parameters->thumbsRootRelativePath ?? '',
-                $parameters->defaultImageRelativePath ?? '',
-                $parameters->qualityJpeg ?? null,
-                $parameters->qualityPng ?? null
-            );
+            $parameters->originalRootPath ?? '',
+            $parameters->thumbsRootPath ?? '',
+            $parameters->thumbsRootRelativePath ?? '',
+            $parameters->defaultImageRelativePath ?? '',
+            $parameters->qualityJpeg ?? null,
+            $parameters->qualityPng ?? null
+        );
 
             Debugger::barDump($imokutrConfig, 'imk config');
 
