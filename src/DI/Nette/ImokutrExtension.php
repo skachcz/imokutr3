@@ -78,24 +78,14 @@ final class ImokutrExtension extends CompilerExtension
             // filter registration:
             $filters = new ImokutrFilters($this->imokutrConfig);
 
-            if ($methodExists) {
-                /* nette 3.0 */
-                $factory->getResultDefinition()->addSetup('addFilter', ['imoUrl', [$filters, 'imoUrl']]);
-            } else {
-                $factory->addSetup('addFilter', ['imoUrl', [$filters, 'imoUrl']]);
-            }
+            $factory->getResultDefinition()->addSetup('addFilter', ['imoUrl', [$filters, 'imoUrl']]);
 
             // macro registration:
             $method = '?->onCompile[] = function($engine)  {
                 SkachCz\Imokutr3\DI\Nette\ImokutrMacros::install($engine->getCompiler());
             }';
 
-            if ($methodExists) {
-                /* nette 3.0 */
-                $factory->getResultDefinition()->addSetup($method, ['@self']);
-            } else {
-                $factory->addSetup($method, ['@self']);
-            }
+            $factory->getResultDefinition()->addSetup($method, ['@self']);
         }
     }
 
