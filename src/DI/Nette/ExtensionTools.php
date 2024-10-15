@@ -12,8 +12,7 @@ use Nette\Schema\Schema;
 use Nette\Schema\Expect;
 
 use Nette\DI\CompilerExtension;
-
-
+use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 
 // if (!class_exists('Nette\DI\CompilerExtension')) {
@@ -29,19 +28,23 @@ use Tracy\Debugger;
 class ExtensionTools
 {
     /**
-     * @param array|object $parameters
+     * @param array<string,mixed>|object $parameters
      */
     public static function createConfigFromArray($parameters): ImokutrConfig
     {
+        if (is_array($parameters)) {
+            $parameters = ArrayHash::from($parameters);
+        }
+
         $imokutrConfig = new ImokutrConfig();
 
         $imokutrConfig->setConfig(
-                $parameters->originalRootPath,
-                $parameters->thumbsRootPath,
-                $parameters->thumbsRootRelativePath,
-                $parameters->defaultImageRelativePath,
-                $parameters->qualityJpeg,
-                $parameters->qualityPng
+                $parameters->originalRootPath ?? '',
+                $parameters->thumbsRootPath ?? '',
+                $parameters->thumbsRootRelativePath ?? '',
+                $parameters->defaultImageRelativePath ?? '',
+                $parameters->qualityJpeg ?? null,
+                $parameters->qualityPng ?? null
             );
 
             Debugger::barDump($imokutrConfig, 'imk config');
