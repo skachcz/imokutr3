@@ -13,8 +13,12 @@ use SkachCz\Imokutr3\DI\Nette\ImokutrMacros;
 use Nette\Schema\Schema;
 use Nette\Schema\Expect;
 
+use Nette\PhpGenerator\Factory;
+
 use Nette\DI\CompilerExtension;
+use Nette\DI\Definitions\FactoryDefinition;
 use Nette\DI\Extensions\DefinitionSchema;
+use Nette\DI\Factor;
 use Tracy\Debugger;
 
 // if (!class_exists('Nette\DI\CompilerExtension')) {
@@ -60,33 +64,25 @@ final class ImokutrExtension extends CompilerExtension
     {
         $builder = $this->getContainerBuilder();
 
-        $methodExists = method_exists($builder->getDefinition('latte.latteFactory'), 'getResultDefinition');
+        /** @var FactoryDefinition */
+        $latteFactory = $builder->getDefinition('latte.latteFactory');
 
-        if ($methodExists) {
-            /* nette 3.0: */
-            $builder->getDefinition('latte.latteFactory')
-                ->getResultDefinition()
-                ->addSetup('addProvider', ['imokutrProvider', $this->prefix('@imokutrProvider')]);
-        } else {
-            $builder->getDefinition('latte.latteFactory')
-                ->addSetup('addProvider', ['imokutrProvider', $this->prefix('@imokutrProvider')]);
-        }
+        $latteFactory->getResultDefinition()
+                    ->addSetup('addProvider', ['imokutrProvider', $this->prefix('@imokutrProvider')]);
 
-        if ($builder->hasDefinition('nette.latteFactory')) {
-            $factory = $builder->getDefinition('nette.latteFactory');
+        // if ($builder->hasDefinition('nette.latteFactory')) {
+
 
             // filter registration:
             $filters = new ImokutrFilters($this->imokutrConfig);
-
-            $factory->getResultDefinition()->addSetup('addFilter', ['imoUrl', [$filters, 'imoUrl']]);
+            $latteFactory->getResultDefinition()->addSetup('addFilter', ['imoUrl', [$filters, 'imoUrl']]);
 
             // macro registration:
             $method = '?->onCompile[] = function($engine)  {
                 SkachCz\Imokutr3\DI\Nette\ImokutrMacros::install($engine->getCompiler());
             }';
-
-            $factory->getResultDefinition()->addSetup($method, ['@self']);
-        }
+            $latteFactory->getResultDefinition()->addSetup($method, ['@self']);
+        // }
     }
 
     public function getConfigSchema(): Schema
