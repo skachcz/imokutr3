@@ -24,6 +24,14 @@ class ImokutrFilters
         $this->config = $config;
     }
 
+    public function load(string $filter): ?callable
+	{
+		if (in_array($filter, get_class_methods($this))) {
+			return [$this, $filter];
+		}
+		return null;
+	}
+
     /**
      * @return string
      */

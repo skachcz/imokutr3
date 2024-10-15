@@ -19,14 +19,13 @@ use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\FactoryDefinition;
 use Nette\DI\Extensions\DefinitionSchema;
 use Nette\DI\Factor;
+
+use Latte\Engine;
+
 use Tracy\Debugger;
 
-// if (!class_exists('Nette\DI\CompilerExtension')) {
-    //throw new ImokutrNetteMissingExtension();
-// }
-
 /**
- * Imokutr Nette extension (for Nette 2.4)
+ * Imokutr Nette extension (for Nette 3.x)
  *
  * @package SkachCz\Imokutr\Nette
  * @author  Vladimir Skach
@@ -41,16 +40,6 @@ final class ImokutrExtension extends CompilerExtension
     public function loadConfiguration()
     {
         $builder = $this->getContainerBuilder();
-
-        Debugger::barDump($this->config, "load config imokutr");
-
-        //imokutr config provider:
-        // $builder->addDefinition($this->prefix('imokutrProvider'))
-            // ->setFactory(Imokutr::class, [$this->config]);
-        /*
-        $builder->addDefinition($this->prefix('imokutrProvider'))
-            ->setFactory(Imokutr::class, [$this->config]);
-        */
         $this->imokutrConfig = ExtensionTools::createConfigFromArray($this->config);
 
         $builder->addDefinition($this->prefix('imokutrProvider'))
@@ -64,25 +53,28 @@ final class ImokutrExtension extends CompilerExtension
     {
         $builder = $this->getContainerBuilder();
 
-        /** @var FactoryDefinition */
+        /** @-var FactoryDefinition */
+        /** @- var Nette\Bridges\ApplicationLatte\LatteFactory */
+        // $latteFactory = $builder->getDefinitionByType(Engine::class);
         $latteFactory = $builder->getDefinition('latte.latteFactory');
+
+        Debugger::barDump($latteFactory, 'latte filters');
 
         $latteFactory->getResultDefinition()
                     ->addSetup('addProvider', ['imokutrProvider', $this->prefix('@imokutrProvider')]);
 
-        // if ($builder->hasDefinition('nette.latteFactory')) {
 
+        $builder->addDefinition($this->prefix('imokutrFilters'))
+        ->setFactory(ImokutrFilters::class, [$this->imokutrConfig]);
 
-            // filter registration:
-            $filters = new ImokutrFilters($this->imokutrConfig);
-            $latteFactory->getResultDefinition()->addSetup('addFilter', ['imoUrl', [$filters, 'imoUrl']]);
+        $latteFactory
+        ->getResultDefinition()
+        ->addSetup('?->addFilter(?, ?)', ['@self', 'imoUrl', [$this->prefix('@imokutrFilters'), 'imoUrl']]);
 
-            // macro registration:
-            $method = '?->onCompile[] = function($engine)  {
+        $method = '?->onCompile[] = function($engine)  {
                 SkachCz\Imokutr3\DI\Nette\ImokutrMacros::install($engine->getCompiler());
             }';
             $latteFactory->getResultDefinition()->addSetup($method, ['@self']);
-        // }
     }
 
     public function getConfigSchema(): Schema
