@@ -24,7 +24,7 @@
 	},
 	"require-dev": {
 		"nette/di": "~3",
-		"latte/latte": "~2",
+		"latte/latte": "*",
 		"tracy/tracy": "^2.3",
 		"phpstan/phpstan": "*",
 		"phpstan/phpstan-nette": "^1.3",

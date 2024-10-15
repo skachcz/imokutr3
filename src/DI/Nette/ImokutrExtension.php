@@ -66,10 +66,17 @@ final class ImokutrExtension extends CompilerExtension
         ->getResultDefinition()
         ->addSetup('?->addFilter(?, ?)', ['@self', 'imoUrl', [$this->prefix('@imokutrFilters'), 'imoUrl']]);
 
+        /*
         $method = '?->onCompile[] = function($engine)  {
                 SkachCz\Imokutr3\DI\Nette\ImokutrMacros::install($engine->getCompiler());
             }';
-            $latteFactory->getResultDefinition()->addSetup($method, ['@self']);
+        $latteFactory->getResultDefinition()->addSetup($method, ['@self']);
+*/
+        $latteFactory
+            ->getResultDefinition()
+            ->addSetup(ImokutrMacros::class . '::install(?->getCompiler())', ['@self']);
+
+
     }
 
     public function getConfigSchema(): Schema

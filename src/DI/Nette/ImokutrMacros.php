@@ -5,13 +5,17 @@ use SkachCz\Imokutr\ImokutrConfig;
 use SkachCz\Imokutr\Image;
 use SkachCz\Imokutr\Thumbnail;
 
+use Latte\Macros\MacroSet;
+use Latte\HtmlNode;
+
+
 use Tracy\Debugger;
 
 /**
  * @package SkachCz\Imokutr\Nette
  * @author  Vladimir Skach
  */
-final class ImokutrMacros extends \Latte\Macros\MacroSet
+final class ImokutrMacros extends MacroSet
 {
 
     /**
@@ -23,7 +27,6 @@ final class ImokutrMacros extends \Latte\Macros\MacroSet
     {
         $set = new static($compiler);
         $set->addMacro('imoTag', [$set, 'imoTag'], [$set, 'imoTag']);
-
         return $set;
     }
 
