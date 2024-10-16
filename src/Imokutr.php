@@ -133,8 +133,6 @@ class Imokutr
             $force
         );
 
-        Debugger::barDump($thumb, 'thumb');
-
         return $thumb;
     }
 }

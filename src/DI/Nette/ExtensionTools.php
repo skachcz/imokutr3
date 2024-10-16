@@ -20,7 +20,7 @@ use Tracy\Debugger;
 // }
 
 /**
- * Imokutr Nette extension (for Nette 2.4)
+ * Imokutr Nette extension (for Nette 3.x)
  *
  * @package SkachCz\Imokutr\Nette
  * @author  Vladimir Skach
