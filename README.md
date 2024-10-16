@@ -1,12 +1,10 @@
-# imokutr
+# imokutr3
 
-PHP image thumbnailer created with primary use for Nette framework, but also usable as a standalone PHP library.
-
-Documentation: https://vladimir.skach.cz/imokutr
+PHP image thumbnailer created with primary use for Nette framework 3.x, but also usable as a standalone PHP library.
 
 ## The basic philosophy
 
-Imokutr is PHP library designed to automatically generate thumbnails from original images.
+Imokutr3 is PHP library designed to automatically generate thumbnails from original images.
 
 It was created with the following assumptions in mind:
 
@@ -18,7 +16,14 @@ Example:
 /disk0/web/files/articles/2018/10/image.jpg
 /disk0/web/files/gallery/pigs/pig01.png
 /disk0/web/files/wallpaper/bifFish.png
+
+/disk0/web/files/wallpaper/bifFish.png
+
+
+/disk0/web/files/default.jpg    <- default image, when source image doesn't exists
+
 ```
+
 2. We have relative paths to these images stored somewhere, like for example in a database:
 
 Example:
@@ -32,29 +37,31 @@ id |title                 | url
 
 3. We want to easily create and show listing images, perex images or gallery thumbnails images created from original images on a web site.
 
-# Nette integration
+# Nette 3.x integration
 
 ## Composer
 ```
-composer install skachcz/imokutr
+composer install skachcz/imokutr3
 ```
 
 ## Nette extension registration in neon.config and configuration:
 
 ```
-extensions:
-    imokutr: SkachCz\Imokutr\Nette\ImokutrExtension
 
-imokutr:
-    originalRootPath: /home/webs/nette-app/www
-    thumbsRootPath: /home/webs/nette-app/www/thumbs
+extensions:
+    imokutr3: SkachCz\Imokutr3\DI\Nette\ImokutrExtension
+
+imokutr3:
+    originalRootPath: %wwwDir%/files
+    thumbsRootPath: %wwwDir%/thumbs
     thumbsRootRelativePath: /thumbs
+    defaultImageRelativePath: default.jpg
     qualityJpeg: 85
     qualityPng: 8
 
 ```
 
-## Using in *.latte template:
+## What we can do in *.latte template:
 
 Parameters - width, height, resizeType, cropParameter
 
@@ -64,7 +71,7 @@ height (mandatory) - Height in pixels for thumbnail.
 
 resizeType (optional) - default is 'w'
 
-'w' - thumbnail width will be same as with parameter, thumbnail height is calculated according to image ratio
+'w' - thumbnail width will be same as width parameter, thumbnail height is calculated according to image ratio
 'h' - thumbnail height will be same as height parameter, thumbnail width is calculated according to image ratio
 'c' - crop - thumbnail will be cropped to specific width and height
 
@@ -108,37 +115,28 @@ Inside the macro code, you can use placeholders %url%, %width% and %height%:
 
 # Standalone library
 
-
-# with composer
-
-composer.json
 '''
-{
-    "require": {
-        "skachcz/imokutr": "master-dev"
-    }
-}
+composer require skachcz/imokutr3
 '''
 
-'''
-composer update
-'''
 
-# without composer
 ```
 <?php
 
-use SkachCz\Imokutr\Imokutr;
-use SkachCz\Imokutr\ImokutrConfig;
-use SkachCz\Imokutr\Html;
+require_once(__DIR__ . "/vendor/autoload.php");
 
-require_once(__DIR__ . "/Imokutr/imokutr.php");
+use SkachCz\Imokutr3\Imokutr;
+use SkachCz\Imokutr3\ImokutrConfig;
+use SkachCz\Imokutr3\Html;
 
-$config = new ImokutrConfig(
-    __DIR__ . "/images/original",
-    __DIR__ . "/images/thumbs",
-    "/images/thumbs"
-    );
+$config = new ImokutrConfig();
+
+$config->setConfig(
+   __DIR__ . "/img/imokutr/original",
+   __DIR__ . "/img/imokutr/thumbs",
+   "/eso-tools/imokutr3/img/imokutr/thumbs",
+   "default.jpg"
+   );
 
 $kutr = new Imokutr($config);
 
@@ -147,14 +145,12 @@ $kutr = new Imokutr($config);
 $img = $kutr->getThumbnail("img1.jpg", 200, 100, 'w'); ?>
 
 <img src="<?php echo $img['url'] ?>" width="<?php echo $img['width'] ?>" height="<?php echo $img['height'] ?>">
-or
-<?php echo Html::img($img) ?>
 
+or
+
+<?php echo Html::img($img) ?>
 
 <?php  $img = $kutr->getThumbnail("img1.jpg", 300, 300, 'c', 5); ?>
 
 <?php echo Html::img($img, "Photo", "My photo", ["data-text" => "My text", "onclick" => 'alert("box")', "class" => "red"] ) ?>
-
-
-
 ```
