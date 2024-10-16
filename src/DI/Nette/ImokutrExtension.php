@@ -73,8 +73,6 @@ final class ImokutrExtension extends CompilerExtension
         $latteFactory
             ->getResultDefinition()
             ->addSetup(ImokutrMacros::class . '::install(?->getCompiler())', ['@self']);
-
-
     }
 
     public function getConfigSchema(): Schema
