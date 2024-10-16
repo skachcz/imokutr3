@@ -7,8 +7,6 @@ use SkachCz\Imokutr3\DI\Nette\ExtensionTools;
 use SkachCz\Imokutr3\Image;
 use SkachCz\Imokutr3\Thumbnail;
 
-use Tracy\Debugger;
-
 use SkachCz\Imokutr3\Exception\ImokutrWrongMacroParameterException;
 
 /**

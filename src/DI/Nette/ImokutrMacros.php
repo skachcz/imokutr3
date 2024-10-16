@@ -8,9 +8,6 @@ use SkachCz\Imokutr\Thumbnail;
 use Latte\Macros\MacroSet;
 use Latte\HtmlNode;
 
-
-use Tracy\Debugger;
-
 /**
  * @package SkachCz\Imokutr\Nette
  * @author  Vladimir Skach

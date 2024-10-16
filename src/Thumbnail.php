@@ -11,8 +11,6 @@ use SkachCz\Imokutr3\Image;
 use SkachCz\Imokutr3\ImageTools;
 use SkachCz\Imokutr3\Exception\ImokutrUnknownImageTypeException;
 
-use Tracy\Debugger;
-
 /**
  * Thumbnail class
  *

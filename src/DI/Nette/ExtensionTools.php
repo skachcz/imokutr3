@@ -13,7 +13,6 @@ use Nette\Schema\Expect;
 
 use Nette\DI\CompilerExtension;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
 
 // if (!class_exists('Nette\DI\CompilerExtension')) {
     //throw new ImokutrNetteMissingExtension();
@@ -46,8 +45,6 @@ class ExtensionTools
             $parameters->qualityJpeg ?? null,
             $parameters->qualityPng ?? null
         );
-
-            Debugger::barDump($imokutrConfig, 'imk config');
 
             return $imokutrConfig;
     }

@@ -22,8 +22,6 @@ use Nette\DI\Factor;
 
 use Latte\Engine;
 
-use Tracy\Debugger;
-
 /**
  * Imokutr Nette extension (for Nette 3.x)
  *
@@ -89,8 +87,6 @@ final class ImokutrExtension extends CompilerExtension
             'qualityJpeg' => Expect::int()->default(75),
             'qualityPng' => Expect::int()->default(6),
         ]);
-
-        Debugger::log($scheme, "imokutr scheme");
 
         return $scheme;
     }
