@@ -72,7 +72,9 @@ height (mandatory) - Height in pixels for thumbnail.
 resizeType (optional) - default is 'w'
 
 'w' - thumbnail width will be same as width parameter, thumbnail height is calculated according to image ratio
+
 'h' - thumbnail height will be same as height parameter, thumbnail width is calculated according to image ratio
+
 'c' - crop - thumbnail will be cropped to specific width and height
 
 cropParameter (optional) 0-8 - default is 0
@@ -141,7 +143,7 @@ $config->setConfig(
 $kutr = new Imokutr($config);
 
 <?php
-// original image is in /images/original/img1.jpg
+// original image is in /img/imokutr/original/img1.jpg
 $img = $kutr->getThumbnail("img1.jpg", 200, 100, 'w'); ?>
 
 <img src="<?php echo $img['url'] ?>" width="<?php echo $img['width'] ?>" height="<?php echo $img['height'] ?>">
