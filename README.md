@@ -41,7 +41,7 @@ id |title                 | url
 
 ## Composer
 ```
-composer install skachcz/imokutr3
+composer require skachcz/imokutr3
 ```
 
 ## Nette extension registration in neon.config and configuration:
@@ -115,9 +115,9 @@ Inside the macro code, you can use placeholders %url%, %width% and %height%:
 
 # Standalone library
 
-'''
+```
 composer require skachcz/imokutr3
-'''
+```
 
 
 ```
