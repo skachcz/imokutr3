@@ -1,60 +1,45 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SkachCz\Imokutr3;
 
 use GdImage;
-use SkachCz\Imokutr3\ImokutrConfig;
 use SkachCz\Imokutr3\Data\ThumbnailInfo;
-use SkachCz\Imokutr3\Exception\ImokutrFileNotFoundException;
-use SkachCz\Imokutr3\Image;
-use SkachCz\Imokutr3\ImageTools;
 use SkachCz\Imokutr3\Exception\ImokutrUnknownImageTypeException;
 
 /**
- * Thumbnail class
- *
- * @package SkachCz\Imokutr
- * @author  Vladimir Skach
+ * @author Vladimir Skach
  */
 class Thumbnail
 {
+    public bool $isAvailable = false;
 
-    public ImokutrConfig $config;
+    public int $width = 0;
 
-    public Image $image;
+    public int $height = 0;
 
-    public bool $isAvailable;
+    public int $targetWidth = 0;
 
-    public int $width;
+    public int $targetHeight = 0;
 
-    public int $height;
+    public int $fixedDimension = Image::DIM_WIDTH;
 
-    public int $targetWidth;
+    public int $cropType = Image::CROP_CENTER;
 
-    public int $targetHeight;
-
-    public int $fixedDimension;
-
-    public int $cropType;
-
-    public function __construct(ImokutrConfig $config, Image $image)
-    {
-        $this->config = $config;
-        $this->image = $image;
-        $this->isAvailable = false;
+    public function __construct(
+        public readonly ImokutrConfig $config,
+        public readonly Image $image,
+    ) {
     }
 
     public function getThumbnailData(): ?ThumbnailInfo
     {
-
-        if ($this->isAvailable) {
-            return(
-                new ThumbnailInfo($this->getThumbnailUrl(), $this->width, $this->height)
-            );
-        } else {
+        if (!$this->isAvailable) {
             return null;
         }
+
+        return new ThumbnailInfo($this->getThumbnailUrl(), $this->width, $this->height);
     }
 
     /**
@@ -62,20 +47,17 @@ class Thumbnail
      */
     public function getThumbnailUrl(): string
     {
-        $path = $this->config->thumbsRootRelativePath
-            . ( $this->image->relpath == null ? '' : '/' . trim($this->image->relpath, '/') )
+        return $this->config->thumbsRootRelativePath
+            . ($this->image->relpath === null ? '' : '/' . trim($this->image->relpath, '/'))
             . '/' . $this->getThumbnalFilename();
-
-        return $path;
     }
 
     public function setResize(
         int $width,
         int $height,
         int $fixedDimension = Image::DIM_WIDTH,
-        int $cropType = Image::CROP_CENTER
+        int $cropType = Image::CROP_CENTER,
     ): void {
-
         $this->width = $width;
         $this->height = $height;
         $this->targetWidth = $width;
@@ -87,91 +69,79 @@ class Thumbnail
     /**
      * Processes image and returns thumbnail data
      */
-    public function processImage(bool $force = false): ?ThumbnailInfo
+    public function processImage(bool $force = false): ThumbnailInfo
     {
-
-        $targetPath = $this->config->thumbsRootPath . '/' . $this->image->relpath;
+        $targetPath = $this->config->thumbsRootPath . '/' . ($this->image->relpath ?? '');
         $targetFile = $targetPath . '/' . $this->getThumbnalFilename();
 
-        if ($force || (!file_exists($targetFile))) {
-            if (!file_exists($targetPath) && !is_dir($targetPath)) {
+        if ($force || !is_file($targetFile)) {
+            if (!is_dir($targetPath)) {
                 @mkdir($targetPath, 0775, true);
             }
 
             $this->createThumbnail($targetFile, $this->targetWidth, $this->targetHeight);
-            $this->isAvailable = true;
         } else {
-            // we will get dimensions from already existing file
-            $imageInfo =  getimagesize($targetFile);
-            $this->width = $imageInfo[0] ?? 0;
-            $this->height = $imageInfo[1] ?? 0;
+            $imageInfo = @getimagesize($targetFile);
+            if ($imageInfo === false) {
+                $lastError = error_get_last();
+                throw new Exception\ImokutrGetImageSizeFailedException($targetFile, $lastError['message'] ?? '');
+            }
 
-            $this->isAvailable = true;
+            $this->width = $imageInfo[0];
+            $this->height = $imageInfo[1];
         }
 
-        return $this->getThumbnailData();
+        $this->isAvailable = true;
+
+        return $this->getThumbnailData()
+            ?? throw new \LogicException('Thumbnail was not created.');
     }
 
     /**
      * @return string Returns thumbnail filename
      */
-    public function getThumbnalFilename()
+    public function getThumbnalFilename(): string
     {
-
         return ltrim($this->image->filebase, '/')
-                . "-" . $this->targetWidth
-                . "x"
-                . $this->targetHeight
-                . "-"
-                . $this->fixedDimension
-                . "-"
-                . $this->cropType
-                . "."
-                . $this->image->fileext;
+            . '-' . $this->targetWidth
+            . 'x'
+            . $this->targetHeight
+            . '-'
+            . $this->fixedDimension
+            . '-'
+            . $this->cropType
+            . '.'
+            . $this->image->fileext;
     }
 
-    /**
-     * @return string
-     */
-    public function createThumbnail(string $targetPath, int $width, int $height)
+    public function createThumbnail(string $targetPath, int $width, int $height): string
     {
-
         return $this->resizeImage($targetPath, $width, $height, $this->image->type, $this->cropType);
     }
 
     /**
      * Creates thumbnail image and saves it to disk
-     *
-     * @return string
      */
     private function resizeImage(
         string $targetPath,
         int $width,
         int $height,
-        int $type = null,
-        int $cropType = Image::CROP_CENTER
-    ) {
-
+        ?int $type = null,
+        int $cropType = Image::CROP_CENTER,
+    ): string {
         $origWidth = $this->image->width;
         $origHeight = $this->image->height;
 
         $src = $this->createImageFrom($this->image->fullpath, $type);
 
-        if (empty($src)) {
-            throw new ImokutrFileNotFoundException($this->image->fullpath);
-        }
-
-        // Cropping image, if needed:
-        if ($this->fixedDimension == Image::DIM_CROP) {
+        if ($this->fixedDimension === Image::DIM_CROP) {
             $cr = ImageTools::cropSize($origWidth, $origHeight, $width, $height, $cropType);
+            $cropped = $this->createTrueColor($cr->width, $cr->height);
 
-            $src2 = \imagecreatetruecolor($cr->width, $cr->height);
-
-            \imagealphablending($src2, false);
-            \imagesavealpha($src2, true);
-
-            imagecopyresampled(
-                $src2,
+            \imagealphablending($cropped, false);
+            \imagesavealpha($cropped, true);
+            \imagecopyresampled(
+                $cropped,
                 $src,
                 0,
                 0,
@@ -180,18 +150,17 @@ class Thumbnail
                 $cr->width,
                 $cr->height,
                 $cr->width,
-                $cr->height
+                $cr->height,
             );
 
-            $src = $src2;
-
+            \imagedestroy($src);
+            $src = $cropped;
             $origWidth = $cr->width;
             $origHeight = $cr->height;
         }
 
         $newImgInfo = ImageTools::resizeRatio($origWidth, $origHeight, $width, $height, $this->fixedDimension);
-
-        $img = \imagecreatetruecolor($newImgInfo->width, $newImgInfo->height);
+        $img = $this->createTrueColor($newImgInfo->width, $newImgInfo->height);
 
         switch ($type) {
             case IMAGETYPE_JPEG:
@@ -205,7 +174,7 @@ class Thumbnail
                     $newImgInfo->width,
                     $newImgInfo->height,
                     $origWidth,
-                    $origHeight
+                    $origHeight,
                 );
                 \imagejpeg($img, $targetPath, $this->config->qualityJpeg);
                 break;
@@ -223,20 +192,21 @@ class Thumbnail
                     $newImgInfo->width,
                     $newImgInfo->height,
                     $origWidth,
-                    $origHeight
+                    $origHeight,
                 );
-
                 \imagepng($img, $targetPath, $this->config->qualityPng);
                 break;
 
             case IMAGETYPE_GIF:
-                // check transparency
-                $tIndex = imagecolortransparent($src);
+                $tIndex = \imagecolortransparent($src);
 
                 if ($tIndex >= 0) {
-                    $tColor  = \imagecolorsforindex($src, $tIndex);
+                    $tColor = \imagecolorsforindex($src, $tIndex);
+                    $transparency = \imagecolorallocate($img, $tColor['red'], $tColor['green'], $tColor['blue']);
+                    if ($transparency === false) {
+                        throw new \RuntimeException(sprintf('imagecolorallocate() failed for "%s".', $targetPath));
+                    }
 
-                    $transparency = (int) \imagecolorallocate($img, $tColor['red'], $tColor['green'], $tColor['blue']);
                     \imagefill($img, 0, 0, $transparency);
                     \imagecolortransparent($img, $transparency);
                 } else {
@@ -254,9 +224,8 @@ class Thumbnail
                     $newImgInfo->width,
                     $newImgInfo->height,
                     $origWidth,
-                    $origHeight
+                    $origHeight,
                 );
-
                 \imagegif($img, $targetPath);
                 break;
 
@@ -264,10 +233,6 @@ class Thumbnail
                 throw new ImokutrUnknownImageTypeException($type, $targetPath);
         }
 
-
-        // NOTICE: copying your reference variable over to another
-        // will cause imagedestroy to destroy both at once.
-        // so imagedestroy($src); will destroy both $src and $src2:
         \imagedestroy($src);
         \imagedestroy($img);
 
@@ -277,27 +242,33 @@ class Thumbnail
         return $targetPath;
     }
 
-
-    /**
-     * Creates new image resource
-     *
-     * @return resource|false
-     */
-    public function createImageFrom(string $path, int $imageType = null)
+    public function createImageFrom(string $path, ?int $imageType = null): GdImage
     {
+        $image = match ($imageType) {
+            IMAGETYPE_JPEG => @\imagecreatefromjpeg($path),
+            IMAGETYPE_PNG => @\imagecreatefrompng($path),
+            IMAGETYPE_GIF => @\imagecreatefromgif($path),
+            default => throw new ImokutrUnknownImageTypeException($imageType, $path),
+        };
 
-        switch ($imageType) {
-            case IMAGETYPE_JPEG:
-                return \imagecreatefromjpeg($path);
-
-            case IMAGETYPE_PNG:
-                return \imagecreatefrompng($path);
-
-            case IMAGETYPE_GIF:
-                return \imagecreatefromgif($path);
-
-            default:
-                throw new ImokutrUnknownImageTypeException($imageType, $path);
+        if ($image === false) {
+            throw new Exception\ImokutrFileNotFoundException($path);
         }
+
+        return $image;
+    }
+
+    private function createTrueColor(int $width, int $height): GdImage
+    {
+        if ($width < 1 || $height < 1) {
+            throw new \RuntimeException(sprintf('Cannot create an image of size %dx%d.', $width, $height));
+        }
+
+        $image = \imagecreatetruecolor($width, $height);
+        if ($image === false) {
+            throw new \RuntimeException(sprintf('imagecreatetruecolor(%d, %d) failed.', $width, $height));
+        }
+
+        return $image;
     }
 }

@@ -1,23 +1,22 @@
 <?php
+
+declare(strict_types=1);
+
 namespace SkachCz\Imokutr3;
 
 /**
- * @package SkachCz\Imokutr3
- * @author  Vladimir Skach
+ * @author Vladimir Skach
  */
-class ImokutrConfig extends \stdClass
+class ImokutrConfig
 {
-
-    public string $originalRootPath = "";
-    public string $thumbsRootPath = "";
-    public string $thumbsRootRelativePath = "";
-    public string $defaultImageRelativePath = "";
-    public int $qualityJpeg = 75;
-    public int $qualityPng = 6;
-
-
-    public function __construct()
-    {
+    public function __construct(
+        public string $originalRootPath = '',
+        public string $thumbsRootPath = '',
+        public string $thumbsRootRelativePath = '',
+        public string $defaultImageRelativePath = '',
+        public int $qualityJpeg = 75,
+        public int $qualityPng = 6,
+    ) {
     }
 
     public function setConfig(
@@ -26,9 +25,8 @@ class ImokutrConfig extends \stdClass
         string $thumbsRootRelativePath,
         string $defaultImageRelativePath,
         int $qualityJpeg = 75,
-        int $qualityPng = 6
+        int $qualityPng = 6,
     ): void {
-
         $this->originalRootPath = $originalRootPath;
         $this->thumbsRootPath = $thumbsRootPath;
         $this->thumbsRootRelativePath = $thumbsRootRelativePath;

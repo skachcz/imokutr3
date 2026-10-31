@@ -1,20 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SkachCz\Imokutr3;
 
 use SkachCz\Imokutr3\Exception\ImokutrFileNotFoundException;
 use SkachCz\Imokutr3\Exception\ImokutrGetImageSizeFailedException;
 
 /**
- * @package SkachCz\Imokutr
- * @author  Vladimir Skach
+ * @author Vladimir Skach
  */
 class Image
 {
-
-    const DIM_WIDTH = 1;
-    const DIM_HEIGHT = 2;
-    const DIM_CROP = 3;
+    public const int DIM_WIDTH = 1;
+    public const int DIM_HEIGHT = 2;
+    public const int DIM_CROP = 3;
 
     /*
      * Crop type constants:
@@ -25,91 +25,102 @@ class Image
      *     7  6  5
      *   ↙    ↓   ↘
      */
-    const CROP_CENTER = 0;
-    const CROP_LEFT_TOP = 1;
-    const CROP_CENTER_TOP = 2;
-    const CROP_RIGHT_TOP = 3;
-    const CROP_RIGHT_CENTER = 4;
-    const CROP_RIGHT_BOTTOM = 5;
-    const CROP_CENTER_BOTTOM = 6;
-    const CROP_LEFT_BOTTOM = 7;
-    const CROP_LEFT_CENTER = 8;
+    public const int CROP_CENTER = 0;
+    public const int CROP_LEFT_TOP = 1;
+    public const int CROP_CENTER_TOP = 2;
+    public const int CROP_RIGHT_TOP = 3;
+    public const int CROP_RIGHT_CENTER = 4;
+    public const int CROP_RIGHT_BOTTOM = 5;
+    public const int CROP_CENTER_BOTTOM = 6;
+    public const int CROP_LEFT_BOTTOM = 7;
+    public const int CROP_LEFT_CENTER = 8;
 
-    public ?string $relpath;
+    public readonly ?string $relpath;
 
-    public string $imagepath;
+    public readonly string $imagepath;
 
-    public string $fullpath;
+    public readonly string $fullpath;
 
-    public string $filepath;
+    public readonly string $filepath;
 
-    public string $filename;
+    public readonly string $filename;
 
-    public string $filebase;
+    public readonly string $filebase;
 
-    public string $fileext;
+    public readonly string $fileext;
 
-    public int $width;
+    public readonly int $width;
 
-    public int $height;
+    public readonly int $height;
 
-    public int $type;
+    public readonly int $type;
 
-    public function __construct(string $rootPath, string $imagePath, string $defaultImagePath = null)
+    public function __construct(string $rootPath, string $imagePath, ?string $defaultImagePath = null)
     {
         $fullpath = rtrim($rootPath, '/') . '/' . ltrim($imagePath, '/');
 
-        // check if file exists
-        if (($imagePath == null) || (!file_exists($fullpath))) {
-            if ($defaultImagePath !== null) {
-                $fullpath = rtrim($rootPath, '/') . '/' . ltrim($defaultImagePath, '/');
-
-                if (!file_exists($fullpath)) {
-                    throw new ImokutrFileNotFoundException($fullpath, "Default image file %s doesn't exist");
-                }
-
-                $imagePath = $defaultImagePath;
-            } else {
+        if ($imagePath === '' || !is_file($fullpath)) {
+            if ($defaultImagePath === null || $defaultImagePath === '') {
                 throw new ImokutrFileNotFoundException($fullpath);
             }
+
+            $fullpath = rtrim($rootPath, '/') . '/' . ltrim($defaultImagePath, '/');
+
+            if (!is_file($fullpath)) {
+                throw new ImokutrFileNotFoundException($fullpath, "Default image file %s doesn't exist");
+            }
+
+            $imagePath = $defaultImagePath;
         }
 
         $this->imagepath = $imagePath;
         $this->fullpath = $fullpath;
 
-        $this->setImageInfo();
+        $info = $this->readImageInfo();
+        $this->width = $info['width'];
+        $this->height = $info['height'];
+        $this->type = $info['type'];
+        $this->filepath = $info['filepath'];
+        $this->filebase = $info['filebase'];
+        $this->fileext = $info['fileext'];
+        $this->filename = $info['filename'];
+        $this->relpath = $info['relpath'];
+    }
+
+    public static function dimensionFromParameter(string $fixedPar): int
+    {
+        return match ($fixedPar) {
+            'c' => self::DIM_CROP,
+            'h' => self::DIM_HEIGHT,
+            default => self::DIM_WIDTH,
+        };
     }
 
     /**
-     * Sets basic image properties
-     *
-     * @return void
+     * @return array{width: int, height: int, type: int, filepath: string, filebase: string, fileext: string, filename: string, relpath: ?string}
      */
-    private function setImageInfo()
+    private function readImageInfo(): array
     {
+        $imageInfo = @getimagesize($this->fullpath);
 
-        $imageInfo = getimagesize($this->fullpath);
-
-        $lastError = error_get_last();
-        if ($lastError !== null && strpos($lastError["message"], 'getimagesize(') === 0) {
-            throw new ImokutrGetImageSizeFailedException($this->fullpath, $lastError["message"]);
+        if ($imageInfo === false) {
+            $lastError = error_get_last();
+            throw new ImokutrGetImageSizeFailedException($this->fullpath, $lastError['message'] ?? '');
         }
-
-        $this->width = $imageInfo[0] ?? 0;
-        ;
-        $this->height = $imageInfo[1] ?? 0;
-        $this->type = $imageInfo[2] ?? 0;
 
         $parts = pathinfo($this->fullpath);
+        $relative = pathinfo($this->imagepath);
+        $dirname = $relative['dirname'];
 
-        $this->filepath = $parts['dirname'] ?? '';
-        $this->filebase = $parts['filename'];
-        $this->fileext = $parts['extension'] ?? '';
-        $this->filename = $parts['basename'];
-
-        $rpath = pathinfo($this->imagepath);
-        if (array_key_exists('dirname', $rpath)) {
-            $this->relpath = ($rpath['dirname'] == '.' ? null : $rpath['dirname']);
-        }
+        return [
+            'width' => $imageInfo[0],
+            'height' => $imageInfo[1],
+            'type' => $imageInfo[2],
+            'filepath' => $parts['dirname'],
+            'filebase' => $parts['filename'],
+            'fileext' => $parts['extension'] ?? '',
+            'filename' => $parts['basename'],
+            'relpath' => $dirname === '.' ? null : $dirname,
+        ];
     }
 }

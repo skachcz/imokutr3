@@ -1,21 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SkachCz\Imokutr3\Data;
 
 /**
- * @package SkachCz\Imokutr3\Data
- * @author  Vladimir Skach
+ * @author Vladimir Skach
  */
-class ThumbnailInfo
+final readonly class ThumbnailInfo
 {
-    public string $url;
-    public int $width;
-    public int $height;
-
-    public function __construct(string $url, int $width, int $height)
-    {
-        $this->url = $url;
-        $this->width = $width;
-        $this->height = $height;
+    public function __construct(
+        public string $url,
+        public int $width,
+        public int $height,
+    ) {
     }
 }

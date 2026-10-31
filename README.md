@@ -1,6 +1,6 @@
 # imokutr3
 
-PHP image thumbnailer created with primary use for Nette framework 3.x, but also usable as a standalone PHP library.
+PHP image thumbnailer for standalone use and for Nette. Requires PHP 8.4+ and the GD extension. Template integration needs Nette DI 3.2+ and Latte 3.
 
 ## The basic philosophy
 
@@ -37,7 +37,7 @@ id |title                 | url
 
 3. We want to easily create and show listing images, perex images or gallery thumbnails images created from original images on a web site.
 
-# Nette 3.x integration
+# Nette integration
 
 ## Composer
 ```
@@ -90,12 +90,12 @@ cropParameter (optional) 0-8 - default is 0
 ## Nette Filter
 
 ```
-{'/files/original/image1.jpg'|imoUrl:100:200:'h'}
+{'/files/original/image1.jpg'|imoUrl:100, 200, 'h'}
 ```
 
-## Macro
+## Tag
 
-Inside the macro code, you can use placeholders %url%, %width% and %height%:
+Inside the tag, you can use placeholders %url%, %width% and %height%:
 
 ```
 {imoTag '/files/original/image1.jpg', 300, 150, 'w'}

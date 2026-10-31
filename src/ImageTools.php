@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SkachCz\Imokutr3;
 
 use SkachCz\Imokutr3\Data\CropInfo;
 use SkachCz\Imokutr3\Data\ImageInfo;
-use SkachCz\Imokutr3\Image;
 
 /**
  * Image transformation arithmetics
  *
- * @package SkachCz\Imokutr
- * @author  Vladimir Skach
+ * @author Vladimir Skach
  */
 class ImageTools
 {
@@ -19,22 +19,14 @@ class ImageTools
         int $height,
         int $newWidth,
         int $newHeight,
-        int $fixedDimension
+        int $fixedDimension,
     ): ImageInfo {
-
-        switch ($fixedDimension) {
-            case Image::DIM_WIDTH:
-                return ImageTools::resizeImageToWidth($width, $height, $newWidth, $newHeight);
-
-            case Image::DIM_HEIGHT:
-                return ImageTools::resizeImageToHeight($width, $height, $newWidth, $newHeight);
-
-            case Image::DIM_CROP:
-                return ImageTools::resizeImageToCrop($width, $height, $newWidth, $newHeight);
-
-            default:
-                return new ImageInfo($newWidth, $newHeight);
-        }
+        return match ($fixedDimension) {
+            Image::DIM_WIDTH => self::resizeImageToWidth($width, $height, $newWidth, $newHeight),
+            Image::DIM_HEIGHT => self::resizeImageToHeight($width, $height, $newWidth, $newHeight),
+            Image::DIM_CROP => self::resizeImageToCrop($width, $height, $newWidth, $newHeight),
+            default => new ImageInfo($newWidth, $newHeight),
+        };
     }
 
     /**
@@ -45,96 +37,52 @@ class ImageTools
         int $height,
         int $targetWidth,
         int $targetHeight,
-        int $cropType = Image::CROP_CENTER
+        int $cropType = Image::CROP_CENTER,
     ): CropInfo {
-
-        // original image ratio
         $oRatio = $width / $height;
-
-        // target image ratio
         $tRatio = $targetWidth / $targetHeight;
 
         $cropWidth = 1;
         $cropHeight = 1;
 
-        // the original image is landscape
         if ($oRatio > 1) {
             if ($tRatio >= $oRatio) {
                 $ratio = $width / $targetWidth;
                 $cropWidth = $width;
-                $cropHeight = intval($targetHeight * $ratio);
+                $cropHeight = (int) ($targetHeight * $ratio);
             } else {
                 $ratio = $height / $targetHeight;
-                $cropWidth = intval($targetWidth * $ratio);
+                $cropWidth = (int) ($targetWidth * $ratio);
                 $cropHeight = $height;
             }
         } else {
-            // original image is portrait or square
-
             if ($tRatio >= $oRatio) {
                 $ratio = $width / $targetWidth;
                 $cropWidth = $width;
-                $cropHeight = intval($targetHeight * $ratio);
+                $cropHeight = (int) ($targetHeight * $ratio);
             }
 
             if ($tRatio < $oRatio) {
                 $ratio = $height / $targetHeight;
-                $cropWidth = intval($targetWidth * $ratio);
+                $cropWidth = (int) ($targetWidth * $ratio);
                 $cropHeight = $height;
             }
         }
 
-        // computes top left point:
-        $centerX = intval(($width - $cropWidth) /2);
-        $centerY = intval(($height - $cropHeight) /2);
+        $centerX = (int) (($width - $cropWidth) / 2);
+        $centerY = (int) (($height - $cropHeight) / 2);
 
-        switch ($cropType) {
-            case Image::CROP_LEFT_TOP:
-                $cx = 0;
-                $cy = 0;
-                break;
-
-            case Image::CROP_CENTER_TOP:
-                $cx = $centerX;
-                ;
-                $cy = 0;
-                break;
-
-            case Image::CROP_RIGHT_TOP:
-                $cx = $width - $cropWidth;
-                $cy = 0;
-                break;
-
-            case Image::CROP_RIGHT_CENTER:
-                $cx = $width - $cropWidth;
-                $cy = $centerY;
-                break;
-
-            case Image::CROP_RIGHT_BOTTOM:
-                $cx = $width - $cropWidth;
-                $cy = $height - $cropHeight;
-                break;
-
-            case Image::CROP_CENTER_BOTTOM:
-                $cx = $centerX;
-                $cy = $height - $cropHeight;
-                break;
-
-            case Image::CROP_LEFT_BOTTOM:
-                $cx = 0;
-                $cy = $height - $cropHeight;
-                break;
-
-            case Image::CROP_LEFT_CENTER:
-                $cx = 0;
-                $cy = $centerY;
-                break;
-
-            case Image::CROP_CENTER:
-            default:
-                $cx = $centerX;
-                $cy = $centerY;
-        }
+        [$cx, $cy] = match ($cropType) {
+            Image::CROP_LEFT_TOP => [0, 0],
+            Image::CROP_CENTER_TOP => [$centerX, 0],
+            Image::CROP_RIGHT_TOP => [$width - $cropWidth, 0],
+            Image::CROP_RIGHT_CENTER => [$width - $cropWidth, $centerY],
+            Image::CROP_RIGHT_BOTTOM => [$width - $cropWidth, $height - $cropHeight],
+            Image::CROP_CENTER_BOTTOM => [$centerX, $height - $cropHeight],
+            Image::CROP_LEFT_BOTTOM => [0, $height - $cropHeight],
+            Image::CROP_LEFT_CENTER => [0, $centerY],
+            default => [$centerX, $centerY],
+        };
 
         return new CropInfo($cx, $cy, $cropWidth, $cropHeight);
     }
@@ -144,9 +92,8 @@ class ImageTools
      */
     public static function resizeImageToWidth(int $width, int $height, int $newWidth, int $newHeight): ImageInfo
     {
-
         $wRatio = $newWidth / $width;
-        $newHeight = intval($height * $wRatio);
+        $newHeight = (int) ($height * $wRatio);
 
         return new ImageInfo($newWidth, $newHeight);
     }
@@ -156,9 +103,8 @@ class ImageTools
      */
     public static function resizeImageToHeight(int $width, int $height, int $newWidth, int $newHeight): ImageInfo
     {
-
         $hRatio = $newHeight / $height;
-        $newWidth = intval($width * $hRatio);
+        $newWidth = (int) ($width * $hRatio);
 
         return new ImageInfo($newWidth, $newHeight);
     }
@@ -168,13 +114,10 @@ class ImageTools
      */
     public static function resizeImageToCrop(int $width, int $height, int $newWidth, int $newHeight): ImageInfo
     {
-
         if ($width > $height) {
-            $info = ImageTools::resizeImageToHeight($width, $height, $newWidth, $newHeight);
-        } else {
-            $info = ImageTools::resizeImageToWidth($width, $height, $newWidth, $newHeight);
+            return self::resizeImageToHeight($width, $height, $newWidth, $newHeight);
         }
 
-        return $info;
+        return self::resizeImageToWidth($width, $height, $newWidth, $newHeight);
     }
 }
